@@ -190,9 +190,13 @@ navbar:
     Home:
       path: /
       icon: fa-regular fa-house # can be empty
-    Archives:
-      path: /archives
+    Courses:
       icon: fa-regular fa-archive # can be empty
+      submenus:
+        Database: /categories/Course-work/CS-5320-Database/
+        Programming Languages and Logics: /categories/Course-work/CS5110-PL/
+        Computer Network: /categories/Course-work/CS5456-Network/
+
     About:
       icon: fa-regular fa-user
       submenus:
