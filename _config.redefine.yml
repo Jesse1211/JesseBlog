@@ -25,7 +25,7 @@ defaults:
   # Site logo
   logo:
   # Site avatar
-  avatar: /public/Jesse.png # TODO: change to your avatar
+  avatar: /images/Jesse.png # TODO: change to your avatar
 # IMAGE CONFIGURATION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< end
 
 # COLORS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> start
@@ -114,8 +114,8 @@ home_banner:
   style: fixed # static or fixed
   # Home banner image
   image:
-    light: /images/wallhaven-wqery6-light.webp # light mode
-    dark: /images/wallhaven-wqery6-dark.webp # dark mode
+    light: /images/Vermont.jpg # light mode
+    dark: /images/test.jpg # dark mode
   # Home banner title
   title: A Repository of Knowledge Across All Fields
   # Home banner subtitle
