@@ -104,4 +104,4 @@ all_minifier: true
 deploy:
   type: git
   repo: https://github.com/Jesse1211/JesseBlog
-  branch: main
+  branch: page
