@@ -102,4 +102,6 @@ all_minifier: true
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ""
+  type: git
+  repo: https://github.com/Jesse1211/JesseBlog
+  branch: main
