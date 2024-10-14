@@ -10,7 +10,7 @@
 # Docs: https://redefine-docs.ohevan.com/basic/info
 info:
   # Site title
-  title: Code Arsonal
+  title: Stack Arsenal
   # Author name
   author: Jesse
   # Site URL
@@ -21,11 +21,11 @@ info:
 # Docs: https://redefine-docs.ohevan.com/basic/defaults
 defaults:
   # Favicon
-  favicon: /images/redefine-favicon.svg # TODO: change to your favicon
+  favicon: /images/chickfilla.jpg
   # Site logo
   logo:
   # Site avatar
-  avatar: /images/Jesse.png # TODO: change to your avatar
+  avatar: /images/Jesse.jpg # TODO: change to your avatar
 # IMAGE CONFIGURATION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< end
 
 # COLORS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> start
