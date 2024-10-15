@@ -1,18 +1,16 @@
 ---
-title: Data Storage
+title: 4. Data Storage
 categories:
   - Course-work
   - CS-5320-Database
 ---
 
-### Definitions
-
 - Decomposing **tables** into pages, **pages** into slots, **slots** into fields
 - Variable length content can be handled via **directories**
 
-### Hardware - Storage
+## Hardware - Storage
 
-#### Relevance for DBMS
+### Relevance for DBMS
 
 - **Capacity limits** force data to lower parts of hierarchy
 - Data **access speed** may become bottleneck
@@ -22,17 +20,13 @@ categories:
 - Keep related data **close** together
 - Take into account volatility for **recovery** considerations
 
-#### Memory Hierarchy:
-
-$$(\text{Volatile}): \text{Registers} \to \text{CPU Cache} \to \text{Main Memory} \to (\text{Non-Volatile}): \text{Flash/USB Memory} \to \text{Hard Disk} \to \text{Tape Backup}$$
-$$\text{Faster Access}\to$$
-$$\text{Lower Capacity} \to$$
+### Memory Hierarchy:
 
 **(Volatile):** Registers → CPU Cache → Main Memory → **(Non-Volatile):** Flash/USB Memory → Hard Disk → Tape Backup  
 **Faster Access →**  
 **Lower Capacity →**
 
-#### Tape Storage
+### Tape Storage
 
 - Bits as **magnetic** information on tape
 - **Very slow access** (10s of seconds)
@@ -40,7 +34,7 @@ $$\text{Lower Capacity} \to$$
 - **Very cheap** (around $0.02 per Gigabyte)
 - Used for long-term **archival** (e.g., by Google)
 
-#### Hard Disk
+### Hard Disk
 
 Bits as **magnetic** information on platter
 
@@ -50,7 +44,7 @@ Bits as **magnetic** information on platter
 - **Cheap** (around $0.035 per Gigabyte)
 - Used for **less frequently accessed** data
 
-#### Solid State Drives SSD
+### Solid State Drives SSD
 
 - Bits as small **electric charges**
 - **Elevated price** (around $0.25 per Gigabyte)
@@ -58,7 +52,7 @@ Bits as **magnetic** information on platter
 - **Elevated speed** (around 500 MB/second)
 - Limited number of write cycles (**memory wear**)
 
-#### Main Memory
+### Main Memory
 
 - Bits as small **electric** charges
 - **Expensive** (several dollars per Gigabyte)
@@ -66,7 +60,7 @@ Bits as **magnetic** information on platter
 - **High bandwidth** (Gigabytes per second)
 - Used to access **hot** data - **all** if economically feasible!
 
-#### Cache
+### Cache
 
 - Bits as small **electric** charges
 - Typically organized as cache **hierarchy**
@@ -75,9 +69,9 @@ Bits as **magnetic** information on platter
 - **Very high bandwidth** (tens of Gigabytes per second)
 - Used to store **immediately relevant** data
 
-### Format - relation representation
+## Format - relation representation
 
-#### Tables as Files
+### Tables as Files
 
 - Table schema === database catalog; 每个 page 的一个 row
 - Table content $\in$ **collection of pages** called file
@@ -85,7 +79,7 @@ Bits as **magnetic** information on platter
   - a few KB for each page
   - might not enough for entire table (only multiple rows)
 
-#### Files to Pages
+### Files to Pages
 
 1. Store pages as **doubly linked list**![[Screenshot 2024-09-05 at 6.03.39 PM.png]]
    - pointer to prev/next
@@ -94,14 +88,14 @@ Bits as **magnetic** information on platter
 2. **Directory** with pointers to pages![[Screenshot 2024-09-05 at 6.03.55 PM.png]]
    - Directory pages reference **data pages with meta-data**
 
-#### Pages to Slots
+### Pages to Slots
 
 - Pages are divided into **slots**
 - Each slot stores one **record** (i.e., table row)
 - Can refer to records via **(pageID, slotID)**
 - Multiple ways to **divide** pages into slots
 
-##### **Fixed**-length
+#### **Fixed**-length
 
 - Number of bytes per slot is determined **a-priori**
 - Need to keep track of which slots are **used** (insertions ...)
@@ -110,7 +104,7 @@ Bits as **magnetic** information on platter
 - **Unpacked** representation allows unused slots in-between
 - Need **bitmap** to keep track of used slots
 
-##### **variable**-length records
+#### **variable**-length records
 
 - E.g., records with variable-length **text** fields
 - Number of bytes per slot is **not fixed** a-priori
@@ -119,7 +113,7 @@ Bits as **magnetic** information on platter
 - **Flexibility** to move around records on page
 - Can use that for regular **compaction**
 
-#### Slots to Fields
+### Slots to Fields
 
 - Must divide each slots into **fields**
 - **Fixed** length field: store field sizes in DB **catalog**

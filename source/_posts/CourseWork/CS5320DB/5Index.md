@@ -1,11 +1,11 @@
 ---
-title: Indexes Tress & Hash
+title: 5. Indexes Tress & Hash
 categories:
   - Course-work
   - CS-5320-Database
 ---
 
-### Definition:
+## Definition
 
 - Binary search
 - B+ tree indexes
@@ -24,7 +24,7 @@ categories:
     - Keys with _same prefix_ may be stored far apart
 - `CREATE INDEX <index-name> ON <table> USING <method> (<column-list>)`
 
-#### Index:
+### Index
 
 - Index == **references** to data records
 - **index search key**: (the index value we are searching for)
@@ -39,11 +39,8 @@ categories:
   - Retrieves the reference list associated with `'Smith'`, which contains pointers to the rows where `'Smith'` appears (e.g., rows 1, 2, and 5).
   - Fetches the actual data rows from the table using pointers
 
-## 6. Tree Index
+# Tree indexes
 
-#### Tree indexes
-
-- ![[Screenshot 2024-09-12 at 4.14.34 PM.png|400]]
 - R - Record Pointer (Reference)
   - Points to P for more entries
 - P - Page as a Node
@@ -53,17 +50,17 @@ categories:
   - K(i): These are the search key values. They help define the boundaries or the ranges of data that each reference (R(i)) covers.
   - Holly, Olivia: R points to different P
 
-##### Inner Nodes - R(0), K(1), R(1), K(2),...
+#### Inner Nodes - R(0), K(1), R(1), K(2),...
 
 - Any entries R(i) points to will be smaller than K(i+1) but larger than K(i).
 
-##### Leaf Nodes: K(1), R(1), K(2),...
+#### Leaf Nodes: K(1), R(1), K(2),...
 
 - Contains actual data references
 - K(i): the key values related to the data records.
 - R(i): point to **{P: data pages, specific slots}** (retrieving to the physical location of the data)
 
-##### Example Usage (works if predicate references index key)
+#### Example Usage (works if predicate references index key)
 
 - equality predicates: `WHERE Sname = 'Alan'`
   1.  Start at root node: Searching for entries with key value V
@@ -79,12 +76,12 @@ categories:
   - Follow links between leaf nodes until _reaching value U_
   - Retrieve referenced data on the way
 
-##### Linking leaf Nodes (B+)
+#### Linking leaf Nodes (B+)
 
 - Leaf pages is **doubly linked list**
   - pointer to next/previous neighbor in leaf
 
-#### Composite keys
+### Composite keys
 
 - _multiple columns_ $\in$ Index search key
 - _sort order_ for key comparisons
@@ -92,7 +89,7 @@ categories:
 - Can use index for (in)equalities on _prefix_ of key columns
   - Restriction to Key Prefix: **Cannot skip first column(s)**
 
-#### Postgres SQL Query
+### Postgres SQL Query
 
 - `CREATE INDEX <index-name> on <table> (<columns>)`
   - Creates index for table using specified search key
@@ -101,7 +98,7 @@ categories:
 - `DROP INDEX <index-name>`
   - Delete index with given name
 
-#### Clustered index
+### Clustered index
 
 - **index stores data** instead of references to data
   - Actual table rows are organized (physically sorted) by index in physical storage.
@@ -110,7 +107,7 @@ categories:
 - **collocates** data with same key together (such as OrderData)
   - faster data retrieval for **Range, Ordered queries**
 
-#### Tree Variants B+: handling balance when update
+### Tree Variants B+: handling balance when update
 
 - keep index balanced during updates
 - **Shallow**
@@ -130,9 +127,9 @@ categories:
     - E.g., imagine student "Bella" is **deleted** again
     - Tree loses one level (**inverse** to insertion operation)
 
-## 7. Hash Index
+# Hash Index
 
-#### Static hashing (bucket pages)
+### Static hashing (bucket pages)
 
 - Bad for dynamic data
 - Hash _bucket_ pages contain references to data
@@ -142,7 +139,7 @@ categories:
   - Calculate hash value h for V as h(V)
   - _Look up bucket page associated with h_
 
-##### Update
+#### Update
 
 - Deletions - remove associated entries
 - Insertions
@@ -153,7 +150,7 @@ categories:
   - Create a new, larger hash table from the old table using different hash function.
 - ![[Screenshot 2024-09-23 at 5.46.04 PM.png|400]]
 
-##### Pros & Cons
+#### Pros & Cons
 
 - Get data with one read
 - May need multiple reads (_> O(1)_) in case of overflow pages
@@ -164,7 +161,7 @@ categories:
   - Recomputing
   - Moving
 
-#### Extendible hashing (directory $\to$ buckets $\to$ pages)
+### Extendible hashing (directory $\to$ buckets $\to$ pages)
 
 - More flexible than using page IDs directly
   - Directory: store addresses of the buckets in pointers
@@ -175,7 +172,7 @@ categories:
   - Increase directory size if too many splits
   - Split Bucket to 2 parts
 
-##### Insertions
+#### Insertions
 
 - Calculate hash value for key of new entry
 - Consult directory to identify current bucket
@@ -185,21 +182,21 @@ categories:
     - For rehashing: consider one more bit of hash value
     - Expand directory if it does not consider enough bits
 
-##### Terminology
+#### Terminology
 
 - Global depth: num of hash bits in directory
   - hash function to categorize the keys
 - Local depth: num hash bits in bucket
   - to decide if overflow occurs.
 
-##### Deletions
+#### Deletions
 
 - Merge bucket pages if they become empty
 - Half directory size if number of buckets shrinks
 - Often no compaction in practice
   - Assumption: inserts are more common than deletes
 
-##### Pros & Cons
+#### Pros & Cons
 
 - Avoids overflow pages
 - No need for expensive rehashing
@@ -208,7 +205,7 @@ categories:
 - Need to double directory occasionally
   - This may take up some time
 
-#### Linear hashing (Avoid overflow pages)
+### Linear hashing (Avoid overflow pages)
 
 - Expands more "smoothly"
 - Idea: avoid using directory by fixing next bucket to split
@@ -217,7 +214,7 @@ categories:
   - Buckets to split are selected in round robin fashion
     - Overflowing bucket will be split eventually
 
-##### Insertion
+#### Insertion
 
 - Calculate hash value for new entry to insert
 - Add entry on page / overflow page
@@ -225,7 +222,7 @@ categories:
   - May eliminate previously generated overflow pages
   - Some flexibility in choice of trigger condition
 
-##### Splitting
+#### Splitting
 
 - Splitting proceeds in rounds: **round-robin order**
   - All buckets present at round start split → round ends
@@ -235,13 +232,13 @@ categories:
   - Add one new page, redistribute split bucket entries
     - Consider one more bit when redistributing
 
-##### Pros & Cons
+#### Pros & Cons
 
 - Avoids a directory - no expensive directory doubling
 - May temporarily admit overflow pages
 - May split empty pages - inefficient space utilization
 
-#### Optimizations
+### Optimizations
 
 - Can apply same optimizations as for tree indexes
 - Have many entries for same search key value?

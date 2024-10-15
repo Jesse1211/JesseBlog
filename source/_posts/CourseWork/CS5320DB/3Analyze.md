@@ -1,61 +1,47 @@
 ---
-title: SQL Queries, Analyze
+title: 3. Con‘t DML (SQL Query)
 categories:
   - Course-work
   - CS-5320-Database
 ---
 
-### Queries
+# Analyze SQL Queries
 
-describes a _new relation_ to generate
+describes a **new relation** to generate
 
-- `SELECT`: describes _columns_ of relation to generate
-- `FROM`: describes _source_ relations and how to match
-- `WHERE`: defines _conditions_ result rows must satisfy
+- `SELECT`: describes **columns** of relation to generate
+- `FROM`: describes **source** relations and how to match
+- `WHERE`: defines **conditions** result rows must satisfy
 - `select * from courses where cid = 1;`
 
-#### Query with Joins
-
-```
-SELECT <column1, column2>
-	FROM <table1>
-	JOIN <table2> ON (<join-conditions>)
-		...
-WHERE <additional-conditions>
-////
-SELECT S.Sname
-FROM Students S
-	JOIN Enrollment E ON (S.sid = E.sid)
-	JOIN Courses C ON (E.cid = C.cid)
-WHERE C.Cname = 'CS4320'
-```
-
-#### Predicates
+## Predicates
 
 - inequalities: `>, >=`
 - not equal: `<>`
 - if in list: `Cname IN ('CS1111', 'CS2222')`
-- Regex: `Cname LIKE 'CS_320&'`
+- Regex: `Cname LIKE 'CS**320&'`
   - `%`: zero or more arbitrary characters
-  - `_`: one arbitrary character
+  - `**`: one arbitrary character
 - `AND`, `OR`, `NOT`: `Cname = 'CS4320' OR Cname = 'CS5320'`
 
-#### Clauses
+## Clauses
 
-##### Select multiple columns
+### Select multiple columns
 
 - `*` for all
   - `<table>.*` select all columns from table
 
-##### Arithmetic
+### Arithmetic
+
+- Must related to numbers
 
 - `SELECT 3 * (<column1> + <column2>)`
 
-##### Assign names
+### Assign names
 
 - `SELECT Sname as StudentName`
 
-##### Join
+### Join
 
 - combine rows from tables based on a related columns
 - `<table1> JOIN <table2> USING (<column>)`
@@ -66,24 +52,40 @@ WHERE C.Cname = 'CS4320'
   - Equalities btw ALL columns with same name
 - `OUTER JOIN` (不用关心有 null 的数据)
   - Eliminates rows in other table, keep regardless
-  - Fills up fields in missing row with _NULL_ values
+  - Fills up fields in missing row with **NULL** values
   - **keep left table**: `<table-1> LEFT OUTER JOIN <table-2> ON ..`
   - **keep right table**: `<table-1> RIGHT OUTER JOIN <table-2> ON ..`
   - **keep both tables**: `<table-1> FULL OUTER JOIN <table-2> ON ..`
 
-##### Distinct
+```SQL
+  SELECT <column1, column2>
+  	FROM <table1>
+  	JOIN <table2> ON (<join-conditions>)
+  		...
+  WHERE <additional-conditions>
+  ////
+  SELECT S.Sname
+  FROM Students S
+  	JOIN Enrollment E ON (S.sid = E.sid)
+  	JOIN Courses C ON (E.cid = C.cid)
+  WHERE C.Cname = 'CS4320'
+```
+
+### Distinct
 
 - generate the unique rows
   - `SELECT DISTINCT`
 
-##### Aggregation over ROWs
+### Aggregation over ROWs
 
 - `COUNT, SUM, AVG, MIN, MAX`
+
   - `SUM, AVG, MIN, MAX`: numerical expression parameter
   - `COUNT(*)` for counting rows in result relation
   - `COUNT(<column>)` counts rows with value in column
-  - `COUNT(DISTINCT <column>`) counts number of distinct values in column in result relation
-  ```
+  - `COUNT(DISTINCT <column>)` counts number of distinct values in column in result relation
+
+  ```sql
   SELECT Count(*)
   FROM Students
   	JOIN Enrollment ON (Students.sid = Enrollment.sid)
@@ -91,17 +93,17 @@ WHERE C.Cname = 'CS4320'
   WHERE Courses.Cname = 'CS4320'
   ```
 
-##### Aggregation over GROUPS
+### Aggregation over GROUPS
 
 - `GROUP-BY` for multiple data subsets
   - `GROUP BY <column-list>` - distinguish data subsets based on their values in specified columns
 - Result contains **one row per group**
-  - Implies _restrictions_ on SELECT clause!
-  - Only expressions with _unique_ value per group
-  - This includes _aggregates_ and _grouping_ columns
-- Put _WHERE_ before grouping
-- Put _HAVING_ after grouping
-  ```
+  - Implies **restrictions** on SELECT clause!
+  - Only expressions with **unique** value per group
+  - This includes **aggregates** and **grouping** columns
+- Put **WHERE** before grouping
+- Put **HAVING** after grouping
+  ```SQL
   SELECT Count(*), Cname
   FROM Students
   	JOIN Enrollment ON (Students.sid = Enrollment.sid)
@@ -111,26 +113,26 @@ WHERE C.Cname = 'CS4320'
   HAVING Count(*) >= 100
   ```
 
-##### ORDER BY
+### ORDER BY
 
 - `ORDER BY <Column2 ASC, Column2 DESC>`
 - Prioritize the earlier items
-- Applied _after_ grouping (for group-by queries)
-  • Items must have _unique_ value per group
+- Applied **after** grouping (for group-by queries)
+  • Items must have **unique** value per group
 
-##### LIMIT
+### LIMIT
 
 - `Limit <Number>`: first numbers of rows
 
-##### NULL
+### NULL
 
 - Unknown values
 - Ternary
   - Result can be TRUE > UNKNOWN > FALSE ==(按这个 priority 分辨)==
-  - If _NULL_ in _comparison operation (=)_, no rows will be returned.
-  - ==\*`TRUE` dominates in `OR` operations (anything OR `TRUE` is `TRUE`).==
-  - ==`FALSE` dominates in `AND` operations (anything AND `FALSE` is `FALSE`).==
-  - ==`NULL` (Unknown) propagates when the result can't be definitively determined by the other operand.==
+  - If **NULL** in **comparison operation (=)**, no rows will be returned.
+  - `TRUE` dominates in `OR` operations (anything OR `TRUE` is `TRUE`).
+  - `FALSE` dominates in `AND` operations (anything AND `FALSE` is `FALSE`).
+  - `NULL` (Unknown) propagates when the result can't be definitively determined by the other operand.
 - Any comparison with NULL gets unknown result
 - `<expression> = TRUE`
 - `<expression> = FALSE`
@@ -143,7 +145,7 @@ WHERE C.Cname = 'CS4320'
   - `SELECT TRUE OR NULL;` - TRUE
   - `SELECT TRUE AND NULL;` - UNKNOWN
 
-##### SET (2 queries must be union-compatible)
+### SET (2 queries must be union-compatible)
 
 - UNION
   - get tuples about duplicates
@@ -156,7 +158,7 @@ WHERE C.Cname = 'CS4320'
   - diff btw queries
   - `<query-1> EXCEPT <query-2>`
 
-##### Query Nesting:
+### Query Nesting
 
 把 query 塞到 FROM, WHERE, SELECT ... clause
 
@@ -170,6 +172,6 @@ WHERE C.Cname = 'CS4320'
     - `EXISTS(<sub-query>)` : TRUE if non-empty
   - IN
     - `<value> IN (<sub-query>)` : TRUE if contained
-  - for all / some: $\forall$ / $\exists$
+  - for all OR some: $\forall$ OR $\exists$
     - `<value> >= ALL(<sub-query>)`: TRUE if satisfied for all
     - `<value> >= ANY(<sub-query>)`: TRUE if satisfied for some

@@ -1,17 +1,18 @@
 ---
-title: SQL Schema, CRUD
+title: 2. DDL & DML (SQL Query)
 categories:
   - Course-work
   - CS-5320-Database
 ---
 
-### Definition
+# SQL Queries Definition
+
 - Database
   - Organized collection of inter-related data used to model aspects of real-world
   - Set of Relations (tables)
 - Relation
-  - _Schema_: description (column header, type)
-  - _Instance:_ set of data satisfying the schema
+  - **Schema**: description (column header, type)
+  - **Instance**: set of data satisfying the schema
 - Attribute
   - column or field
 - Tuple
@@ -31,31 +32,35 @@ categories:
 
 #### 4 types of commands (focus on first 3)
 
-- DDL: 定义 - _Data Definition Language_
+- DDL: 定义 - **Data Definition Language**
   - Define admissible database content (schema)
   - `DROP, CREATE, ALTER`
-- DML: 操作数据 - _Data Manipulation Language_
+- DML: 操作数据 - **Data Manipulation Language**
   - analyze, combine, change and retrieve database content
   - `INSERT, UPDATE, DELETE`
-- TCL: each update query is a transaction - _Transaction Control Language_
-  - Groups SQL commands (transactions)
-  - `SELECT语句`
-- (不需要懂) DCL: 控制, 分配, access permissions - _Data Control Language_
+- TCL: each update query is a transaction - **Transaction Control Language**
+  - Groups SQL commands (transactions - Read / Write)
+  - `SELECT`
+- DCL: 控制, 分配, access permissions - **Data Control Language**
   - Assign data access rights
   - `GRANT, REVOKE, COMMIT, ROLLBACK`
 
-### DDL: 定义 Data Definition Language (Schema, Relations, Constraints)
+---
 
-Not using Single Table to
+## DDL: 定义 Data Definition Language (Schema, Relations, Constraints)
+
+Not using Single Table in database schema design
 
 - Reduce redundancy
-- Minimize update errors
+  - A well-designed schema breaks the data into **multiple related tables** to avoid repeating the same information across rows.
+- Minimize (inconsistent or incorrect) update errors
+  - By splitting data into related tables, each piece of information exists in only one place, making updates more reliable and reducing the chance of errors.
 
-#### Schema
+### Schema
 
-Define relations with their _schemata_
+Define relations with their **schemata**
 
-- columns and column _types_ - `CREATE`
+- columns and column **types** - `CREATE`
 - `CREATE TABLE <table> (<table-def>)`
   - `<table>` is the table name
   - `<table-def>` is comma-separated column definitions
@@ -63,11 +68,11 @@ Define relations with their _schemata_
 - Example
   - `CREATE TABLE Students(Sid int, Sname text, Gpa real);`
 
-#### Constraints
+### Constraints
 
-- Define _constraints_ restricting admissible content
-  - Constraints on _single relations_
-  - Constraints linking _multiple relations_
+- Define **constraints** restricting admissible content
+  - Constraints on **single relations**
+  - Constraints linking **multiple relations**
 - Primary key
   - unique
   - refers to a single table
@@ -76,10 +81,10 @@ Define relations with their _schemata_
   - `ALTER TABLE <table name> ADD Primary Key (col1, col2);`
     - `ALTER TABLE Students ADD PRIMARY KEY(Sid, Cid);`
 - Foreign key
-  - A foreign key constraint links _two tables_
-  - table 1: has _foreign key columns_
-  - table 2: has _primary key_ and mapped (`=`) to table1's foreign key
-  - Maps _each row_ in table 1 to a row from table 2
+  - A foreign key constraint links **two tables**
+  - table 1: has **foreign key columns**
+  - table 2: has **primary key** and mapped (`=`) to table1's foreign key
+  - Maps **each row** in table 1 to a row from table 2
   - `ALTER TABLE <table-1> ADD Foreign Key (<fkey-columns>) REFERENCES <table-2> (<pkey-columns>);
     - Sid in Enrollment ===== student in Students table
     - `ALTER TABLE Enrollment ADD FOREIGN KEY(Sid) REFERENCES Students(Sid);`
@@ -91,10 +96,12 @@ Define relations with their _schemata_
   - enforced by DBMS
   - `ALTER TABLE` to add integrity constraints
 
-### DML: 操作数据 Data Manipulation Language (Insert, Delete, Update, Analyze)
+---
+
+## DML: 操作数据 Data Manipulation Language (Insert, Delete, Update, Analyze)
 
 - Insert
-  - Inserting one (_fully specified_) row into a table:
+  - Inserting one (**fully specified**) row into a table:
     - `INSERT INTO <table> VALUES (<value-list>)`
     - `INSERT INTO Students VALUES (3, 'Alice', 4.0)`
   - Inserting one (partially specified) row into a table:
@@ -112,4 +119,5 @@ Define relations with their _schemata_
     - `UPDATE **<table> SET <column> = <value> WHERE <condition>`
     - `UPDATE Courses SET Cid = 7 WHERE Cname = 'CS4320'`
 - Analyze
-  - 看下一章
+  - describes a **new relation** to generate
+    - `SELECT`, `FROM`, `WHERE`,...
