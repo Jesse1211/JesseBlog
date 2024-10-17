@@ -408,14 +408,17 @@ plugins:
     enable: false # Whether to enable
   # Aplayer. See https://github.com/DIYgod/APlayer
   aplayer:
-    enable: false # Whether to enable
+    enable: true # Whether to enable
     type: fixed # fixed, mini
     audios:
-      - name: # audio name
-        artist: # audio artist
-        url: # audio url
-        cover: # audio cover url
-        lrc: # audio cover lrc
+      - name: Liszt Sonata in B Minor
+        # artist: John Lennon # audio artist
+        url: https://blog.jesseliu.me/music/Liszt.mp3
+        # cover: https://evan.beee.top/music/covers/Lennon_Imagine_Sleeve_1975.jpg # audio cover
+      - name: Jeep's Blue # audio name
+        # artist: Coldplay
+        url: https://blog.jesseliu.me/music/JeepsBlues.mp3
+        # cover: https://evan.beee.top/music/covers/Something_Just_Like_This.png
   #      - name: # audio name
   #        artist: # audio artist
   #        url: # audio url
