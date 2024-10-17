@@ -6,27 +6,32 @@ categories:
 ---
 
 - 访问(并更新)数据库的一个程序执行**单元**
-- A sequence of updates (or queries) that is "connected"
+- **Transaction**
+  - A sequence of updates (or queries) that is "connected"
+- **Two operations may conflict if**
+  - They are by different transactions
+  - They are on the same object, and one of them is a write
 - DBMS commands for assigning queries to transactions
 - DBMS makes guarantees about transactions
   - execute **all transactions or none**
 - Example
   - Wire $50 from Alice to Bob
-    1. - $50 from Alice's account
-    2. - $50 to Bob's account
+    1. Deduct $50 from Alice's account
+    2. Add $50 to Bob's account
   - Semantically related - execute both or none
-- Postgres
+- Postgres operations
   - Begin a transaction with command **BEGIN;**
-  - End a transaction with command **COMMIT; or ABORT;**
+  - End a transaction with command **COMMIT;** or **ABORT;**
   - Everything in between belongs to **transaction**
 - Locks
   - Multiple transactions can read objects without conflicts
   - **Read (aka shared) locks**: read access
   - **Write (aka exclusive) locks**: read+write access
-  - Transactions specifically request read or write lock
   - Lock manager may grant **multiple read locks** on same object
 
 ## ACID guarantees
+
+Transactions guarantee the **ACID properties** to avoid the problems
 
 ### A: Atomicity (either execute all or nothing)
 
@@ -90,34 +95,27 @@ categories:
 - Must store enough info on disk to **restore** at startup
 - Only notify user of commit **after** that has happened
 
-## Isolation Anomaly
+## Isolation Anomaly (if violate ACID)
 
 - may destroy illusion of sequential execution
-- **Two operations may conflict if**
-  - They are by different transactions
-  - They are on the same object, and one of them is a write
 - **Write-Read Conflict (W-R)**
-  - Dirty Reads: reads data written by not committed transaction
+  - **Dirty Reads**: reads data written by not committed transaction
   - User 1 updates a toy’s price but this gets aborted.
   - User 2 reads the update before it was rolled back.
 - **Read-Write Conflict (R-W)**
-
-  - Unrepeatable Reads: Transaction gets a different value, when reading it multiple times
+  - **Unrepeatable Reads**: Transaction gets a different value, when reading it multiple times
   - A user reads two different values for the same record because another user updated the record in between the two reads.
-
 - **Read-Read Conflict (R-R)**
 - **Write-Write Conflict (W-W)**
-
-  - Lost Updates - Overwrites uncommitted data from another uncommitted transaction
+  - **Lost Updates**: Overwrites uncommitted data from another uncommitted transaction
   - Two users try to update the same record at the same time so one of the updates gets lost.
-
 - **Phantom Read (幻读)**
   - 在同一个事务中，由于其他事务的提交，执行同一查询时可能会返回之前未返回的数据记录。这通常发生在以下情况：事务在开始时读取了一组数据，但在执行过程中，其他事务插入了新的数据记录，导致原始事务再次执行查询时返回了新的数据记录。
 - Isolation Level
-  - Read uncommitted: 读取数据时，不需要等待其他事务提交。
-  - Read committed: 事务只能读取那些其他事务已经提交的数据变更。
-  - Repeatable Read: 事务在开始时生成一个快照，事务执行期间只基于这个快照读取数据。这意味着，事务在整个执行过程中看到的都是同一个数据状态，无论其他事务在此期间进行了多少次修改和提交。
-  - Serializable: 所有读取操作都是串行执行的
+  - **Read uncommitted**: 读取数据时，不需要等待其他事务提交。
+  - **Read committed**: 事务只能读取那些其他事务已经提交的数据变更。
+  - **Repeatable Read**: 事务在开始时生成一个快照，事务执行期间只基于这个快照读取数据。这意味着，事务在整个执行过程中看到的都是同一个数据状态，无论其他事务在此期间进行了多少次修改和提交。
+  - **Serializable**: 所有读取操作都是串行执行的
 
 ### Isolation in Postgres
 
@@ -130,22 +128,20 @@ Setting default isolation level for future transactions:
 - `<isolation-spec> ::= isolation level <i-level>`
 - `<i-level>` is one of SERIALIZABLE, REPEATABLE READ, READ COMMITTED, READ UNCOMMITTED
 
-## Concurrency Control
+## Concurrency Control (Analyze transaction schedules)
 
 Select cheapest schedule among good ones & minimize selection **overheads**
 
 - **Schedule**: ordered steps from multiple transactions
 - A **good schedule** preserves the illusion of isolation
-
   - E.g., none of aforementioned anomalies
-
 - Properties
-  - Serializability
+  - **Serializability**
     - Final state serializable (Anomalies)
     - Conflict serializable (Disallows some good schedules)
     - View serializable (slow concurrency control)
     - 2PL (produces conflict serializable schedules)
-  - Aborts
+  - **Aborts**
     - Recoverable
     - Avoids cascading aborts
     - Strict
@@ -270,6 +266,8 @@ Use Locks to protect database objects
 
 - Types
   - **Fine-grained** locks are better
+    - increase degree of parallelism
+    - increases locking overheads
   - **Shared and Exclusive Locks:** Can perform multiple reads in parallel
   - **Release Early:** Allows parallelism
   - **Acquire Late:** Allows parallelism
@@ -308,10 +306,9 @@ Use Locks to protect database objects
   - Transaction 1 acquires **lock on A**, now **waiting for B**
   - Transaction 2 acquires **lock on B**, now **waiting for A**
 
-### Two-Phase Locking (Get conflict serializability)
+### Two-Phase Locking (Ensure conflict serializable schedules)
 
 - no transaction can release locks prematurely and then request new locks, which could lead to inconsistencies or deadlocks.
-- Fine-grained locks on single objects
 - Distinguishes different **lock types**
   - Locks may be **acquired late** (depends on 2PL variant)
   - Locks may be **released early** (depends on 2PL variant)
@@ -319,7 +316,9 @@ Use Locks to protect database objects
   - Guarantees **conflict-serializable** schedules
 - Phase
   - Phase 1: ONLY **acquire** locks
+    - must acquire a S (shared) lock before reading, and an X (exclusive) lock before writing.
   - Phase 2: ONLY **release** locks
+    - cannot acquire new locks after releasing any locks
 
 #### Variants
 
@@ -328,7 +327,7 @@ Use Locks to protect database objects
 - **Strict 2PL:** release all locks at transaction end
   - prevents cascading aborts
 - **Conservative Strict 2PL**
-- **Plain 2PL** no restrictions on acquiring & releasing lock periods
+- **Plain 2PL**: no restrictions on acquiring & releasing lock periods
   - Being non-conservative or non-strict is **more permissive**
   - Allows more transactions to proceed **in parallel**
   - Not preventing deadlocks or cascading aborts
@@ -339,19 +338,19 @@ Use Locks to protect database objects
 
 #### Proof (generates conflict-serializable schedules)
 
-- Release First Lemma: if conflict graph has path from T1 to T2 then there exists a lock L1 that T1 releases before T2 is finished acquiring its locks
+- Release First Lemma:
+  - if conflict graph has path T1 to T2 then put a lock L1 AND T1 releases before T2 is finished acquiring its locks
   - T1 has started releasing locks while T2 has not
 - **Induction start**: holds for paths of length 1
 - **Induction step**: from paths of length I to i+1
 
-- Assume that the 2PL schedule leads to a cycle in conflict graph
-- Let the cycle be T1->…..->T2->T1
-- For the path T1->…->T2, we know that T1 is releasing locks while T2 is still acquiring a lock (Mathematically, time(T1 starts releasing) < time(T2 finishes acquiring))
+- Assume 2PL schedule leads to a cycle in conflict graph
+  - T1->…..->T2->T1
+- For T1->…->T2, T1 is releasing locks while T2 is still acquiring a lock
   - time(T1 starts releasing) < time(T2 finishes acquiring)
 - T2->T1 means that T2 is releasing locks while T1 is acquiring locks
   - time(T2 started releasing) < time(T1 finishes acquiring)
-- Since T2 releases after acquiring, it means that Time(T1 starts releasing) < time(T1 finishes acquiring) Which is a contradiction
-- 2PL can not produce **all** conflict serializable schedules
+- By contradiction, 2PL can not produce **all** conflict serializable schedules
   - W1(A) R2(A) C2 R3(B) C3 W1(B) C1
   - Conflict graph has three nodes, two edges → no cycle
   - Could this have been produced by 2PL?
@@ -376,55 +375,50 @@ Use Locks to protect database objects
 #### Deadlock Resolve
 
 - Only possibility: abort one deadlocked transaction
-- Aborted transaction is typically restarted
-- Can try to optimize selection of aborted transaction
+  - Aborted == restarted
+- Optimize selection of aborted transaction
   - E.g., abort youngest transaction for least overhead
 
-#### Deadlock Avoid
+#### Deadlock Avoid / Prevention
 
 - Proactively abort transactions that may cause deadlocks
 - **Priority** based on timestamps (older transaction - higher priority)
-- **Wound-wait protocol**:
-  - Transaction T1 needs lock held by T2
-  - T2 abort if T1 has higher priority
-  - T1 waits if T1 has lower priority
-- **Wait-die protocol**:
-  - Transaction T1 needs lock held by T2
-  - T1 waits if T1 has higher priority
-  - T1 aborts if T1 has lower priority
-- **Wound-Wait** Deadlock Prevention Proof
-  - A deadlock means transactions wait in a cycle
-  - Only **lower** priority transaction can wait for **higher** priority
-    - Due to definition of Wound-wait protocol
-  - Assume cycle in waits-for graph, transaction T1 in cycle
-    - T1 → T2: T1 must have **lower** priority than T2
-    - T1 → T2 → T3: T1 must have **lower** priority than T3
-    - T1 → ... → T1: T1 must have **lower** priority than T1
-    - Leads to a contradiction so no cycle is possible!
-- **Wait-Die** Deadlock Prevention Proof
-  - A deadlock means transactions wait in a cycle
-  - Only **higher** priority transaction can wait for **lower** priority
-    - Due to definition of wait-die protocol
-  - Assume cycle in waits-for graph, transaction T1 in cycle
-    - T1 → T2: T1 must have **higher** priority than T2
-    - T1 → T2 → T3: T1 must have **higher** priority than T3
-    - T1 → ... → T1: T1 must have **higher** priority than T1
-    - Leads to a contradiction so no cycle is possible!
-  - Pro: Transactions that acquired all locks won't abort
-  - Con: Young transaction may re-abort for same reason
+- Pro of **Wait-Die**: Transactions that acquired all locks won't abort
+- Con of **Wait-Die**: Young transaction may re-abort for same reason
 - Avoiding **Starvation**
   - Higher priority transaction is never restarted for both
   - When restarting transaction, assign original timestamp
   - So transaction will be eventually prioritized
   - Avoids starvation (i.e., no transaction never processed)
 
+##### Wound-wait protocol:
+
+- T2 abort if T1 has higher priority, else T2 wait
+- Proof
+  - **lower** priority transaction wait for **higher** priority
+  - Assume cycle in waits-for graph, transaction T1 in cycle
+    - T1 → T2: T1 must have **lower** priority than T2
+    - T1 → T2 → T3: T1 must have **lower** priority than T3
+    - T1 → ... → T1: T1 must have **lower** priority than T1
+    - Leads to a contradiction so no cycle is possible!
+
+##### Wait-die protocol:
+
+- T1 waits if T1 has higher priority than T2, else T1 die
+- Proof
+  - Only **higher** priority transaction can wait for **lower** priority
+  - Assume cycle in waits-for graph, transaction T1 in cycle
+    - T1 → T2: T1 must have **higher** priority than T2
+    - T1 → T2 → T3: T1 must have **higher** priority than T3
+    - T1 → ... → T1: T1 must have **higher** priority than T1
+    - Leads to a contradiction so no cycle is possible!
+
 ### Handling phantoms
 
-- Transaction 1 selects students with name starting with F
-- Transaction 2 inserts new student "Frank"
-- Transaction 1 selects students starting with F again
-  - Suddenly we see a new student in the query result
-  - Similar to unrepeatable read, caused by insertions
+- T1 selects students with name starting with F
+- T2 inserts new student "Frank"
+- T1 selects students starting with F again
+  - Suddenly, new student in the query result
 - Problem: 2PL only locked students present **at first query**
 
 #### Avoid phantoms
@@ -440,11 +434,14 @@ Use Locks to protect database objects
 ### Efficient index locking
 
 - Observation: traverse tree into one direction only
-- Locking one node sufficient to block other transactions
-  - I.e., keeping later transactions out of current sub-tree
-- Locking for index **lookups** (crabbing):
-  - Identify next node (child node or root at start)
-  - Lock next (read lock), then unlock parent - repeat
+
+1. 锁当前 node:
+   - Locking one node sufficient to block other transactions
+   - I.e., keeping later transactions out of current sub-tree
+2. 找要的 children: Locking for index **lookups** (crabbing):
+   - Identify next node (child node or root at start)
+3. 锁 children, 解锁当前 node:
+   - Lock next (read lock), then unlock parent - repeat
 
 #### Locking for index updates
 
@@ -458,9 +455,6 @@ Use Locks to protect database objects
 
 ### Multi-granularity locking
 
-- Fine-grained locking
-  - increase degree of parallelism
-  - increases locking overheads
 - Best granularity may depend on query
   - E.g., whether we access most or few table rows
 - Multiple-granularity locking mixes lock granularities
@@ -472,11 +466,13 @@ Use Locks to protect database objects
 
 #### Intention locks
 
-- **IS (Intention Shared)**:  want shared lock on contained object
+- **IS (Intention Shared)**: want shared lock on contained object
   - lock on ancestors before requesting Shared lock
-- **IX (Intention Exclusive)**:  want exclusive lock on contained object
+- **IX (Intention Exclusive)**: want exclusive lock on contained object
   - lock on ancestors before Exclusive lock
-- Release intention locks from leaf to root node to avoid inconsistent locks
+  - two transactions can place an IX lock on the same resource
+  - not directly conflict at that point because they could place the X lock on two different children! Database manager ensures NO placing X locks on the same node later on while allowing two IX locks on the same resource.
+- Must release locks in bottom-up order to avoid inconsistent locks
 
 ## Optimistic Concurrency Control
 
@@ -538,14 +534,17 @@ Use Locks to protect database objects
 
 - TS(T): timestamp of transaction T
 - RTS(A), WTS(A): read & write timestamp of object A
-- read database object A
-  - Abort & restart if TS(T) < WTS(A)
-- write database object A
-  - Abort & restart if TS(T) < RTS(A)
-  - What if TS(T) < WTS(A) ... ?
-- Tuomas Write Rule
-  - write A but TS(T) < WTS(A)
+- want to read database object A
+  - Abort & restart if TS(T) < WTS(A) (开始 Transaction 之后有被改过)
+- want to write database object A
+  - Abort & restart if TS(T) < RTS(A) (有人在开始 Transaction 之后读过)
+- TS(T) < WTS(A)
+  - 如果是 Write, A 最新的值被改到老值, 需要 abort
+  - 如果是 read, A 被 overwrite, 需要 abort
+  - 两个都违反了 Serialization Order
+- Thomas Write Rule
   - ignores outdated writes
+  - Write A but TS(T) < WTS(A)
     - R1(A) W2(A) C2 W1(A) C1
     - Not conflict serializable but view-serializable
     - Simplifies to R1(A) C2 W1(A) C1
@@ -553,6 +552,7 @@ Use Locks to protect database objects
 ## Multi-version concurrency control
 
 - Idea: keep multiple versions of database objects
+- **以我启动的时刻为准，如果一个数据版本是在我启动之前生成的，就认；如果是我启动以后才生成的，我就不认，必须找到它的上一个版本为止**
 - Example
   - R1(A) W1(A) R2(A) W2(B) R1(B) W1(C)
   - Not conflict-serializable
@@ -566,7 +566,7 @@ Use Locks to protect database objects
 - Each write creates a new version of an object
   - Perform write check and abort if not valid
   - Version has timestamp of writing transaction
-- Read mapped to last version before transaction timestamp
+- Read mapped to last version **before transaction timestamp**
   - Transaction with timestamp i reads version with largest timestamp k such that k < i
 
 ### Write Check
@@ -584,7 +584,7 @@ Use Locks to protect database objects
 - Need additional mechanisms for abort properties
 - E.g., delay commits for recoverability
 
-## Snapshot isolation
+## Snapshot isolation SI
 
 - Each transaction operates on database snapshot
   - Uses last committed value for each object
@@ -594,14 +594,14 @@ Use Locks to protect database objects
 ### Handling Writes
 
 - Check before commit for overlapping writes
-- if target objects changed
-  - abort & restart transaction
+  - if target objects changed
+    - abort & restart transaction
 - Example With SI
   - tables A and B with one integer column each
     - T1: Insert into B select count( \* ) from a;
     - T2: Insert into A select count( \* ) from b;
   - Both has out-dated snapshot
-  - Causes Weite Skew
+  - Causes Write Skew
     - each transaction reads overlapping data and writes to disjoint data based on the reads
 - Serializability vs. SQL Definition
   - SQL-92 standard defines isolation via anomalies

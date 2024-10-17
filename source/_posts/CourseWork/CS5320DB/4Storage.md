@@ -81,42 +81,65 @@ Bits as **magnetic** information on platter
 
 ### Files to Pages
 
-1. Store pages as **doubly linked list**![[Screenshot 2024-09-05 at 6.03.39 PM.png]]
-   - pointer to prev/next
-   - separate by full/partially/empty pages
-   - header reference in DB catalog
-2. **Directory** with pointers to pages![[Screenshot 2024-09-05 at 6.03.55 PM.png]]
+1. Store pages as **doubly linked list**
+   - each data page contains **records**, a **free space tracker**, and **pointers** (byte offsets) to the next and previous page.
+   - header page - header reference in DB catalog
+     - start of the file and separates the data pages into full pages and free pages.
+     - When space is needed, empty pages are allocated and appended to the free pages portion of the list.
+     - When free data pages become full, move from the free space portion to the front of the full pages portion of the linked list.
+2. **Directory** with pointers to pages
    - Directory pages reference **data pages with meta-data**
+   - Faster records insertion
+   - Read at most all of the directory pages
 
-### Pages to Slots
+#### Pages divided to Slots
 
-- Pages are divided into **slots**
-- Each slot stores one **record** (i.e., table row)
-- Can refer to records via **(pageID, slotID)**
+- One **record** per slot (i.e., table row)
+  - **(pageID, slotID)**
 - Multiple ways to **divide** pages into slots
 
-#### **Fixed**-length
+##### 1 Fixed-length Records (FLR)
 
-- Number of bytes per slot is determined **a-priori**
-- Need to keep track of which slots are **used** (insertions ...)
-- **Packed** representation uses consecutive slots
-- Only keep track of **number** of slots used
+- Number of bytes per slot is determined
+- **Packed** representation uses **consecutive slots**
+  - Sorted in USED & UNUSED
+  - Only keep track of **number** of slots used
 - **Unpacked** representation allows unused slots in-between
-- Need **bitmap** to keep track of used slots
+  - Unsorted in USED & UNUSED
+  - Need **bitmap** to keep track of used slots
 
-#### **variable**-length records
+##### 2 Variable-length records (VLR)
 
 - E.g., records with variable-length **text** fields
-- Number of bytes per slot is **not fixed** a-priori
-- Each page maintains **directory** about used slots
-- Store **first byte** and length of slots
+- Number of bytes per slot is **not fixed**
+- Each Page has **directory** about used slots: first byte, slot length
 - **Flexibility** to move around records on page
 - Can use that for regular **compaction**
 
-### Slots to Fields
+#### Slots divide to Fields
 
-- Must divide each slots into **fields**
-- **Fixed** length field: store field sizes in DB **catalog**
+- **Fixed** length field: field sizes defined in DB **catalog**
 - **variable** length field: store field sizes on **page**
-- Option 1: use special **delimiter symbol** between fields
-- Option 2: store "**field directory**" at beginning of record
+  - Option 1: use special **delimiter symbol** between fields
+  - Option 2: store "**field directory**" at beginning of record
+
+# Questions
+
+1. Given a heap file implemented as a Page Directory, what is the I/O cost to insert a record in the worst case? The directory contains 4 header pages and 3 data pages for each header page. Assume that at least one data page has enough space to fit the record.
+   - 4 (read header pages) + 1 (read data) + 1 (write data) + 1 (write last header) = 7
+2. What is the smallest size, in bytes, of a record from the following schema? Assume that the record header is 5 bytes. (boolean = 1 byte, date = 8 bytes)
+   ```SQL
+   name VARCHAR
+   student BOOLEAN
+   birthday DATE
+   state VARCHAR
+   ```
+   - 5 (record header) + 1 (boolean) + 8 (date) + 0 (state) + 0 (name) = 14
+3. What is the maximum size, in bytes, of a record from the following schema? Assume that the record header is 5 bytes. (boolean = 1 byte, date = 8 bytes)
+   ```SQL
+   name VARCHAR(12)
+   student BOOLEAN
+   birthday DATE
+   state VARCHAR(2)
+   ```
+   - 5 (record header) + 12 (VARCHAR) + 1 (boolean) + 8 (date) + 2 (VARCHAR) = 28

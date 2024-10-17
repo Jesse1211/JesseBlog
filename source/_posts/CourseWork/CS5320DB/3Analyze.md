@@ -1,5 +1,5 @@
 ---
-title: 3. Con‘t DML (SQL Query)
+title: 3. DML Contd. (SQL Query)
 categories:
   - Course-work
   - CS-5320-Database
@@ -63,7 +63,7 @@ describes a **new relation** to generate
   	JOIN <table2> ON (<join-conditions>)
   		...
   WHERE <additional-conditions>
-  ////
+  ---
   SELECT S.Sname
   FROM Students S
   	JOIN Enrollment E ON (S.sid = E.sid)
@@ -104,13 +104,13 @@ describes a **new relation** to generate
 - Put **WHERE** before grouping
 - Put **HAVING** after grouping
   ```SQL
-  SELECT Count(*), Cname
+  SELECT Count(_), Cname
   FROM Students
-  	JOIN Enrollment ON (Students.sid = Enrollment.sid)
-  	JOIN Courses ON (Enrollment.cid = Courses.cid)
-  WHERE Cname IN ('CS4320', 'CS5320')
+  JOIN Enrollment ON (Students.sid = Enrollment.sid)
+  JOIN Courses ON (Enrollment.cid = Courses.cid)
+  WHERE Cname IN ('CS4320', 'CS5320') -- Filter out rows (before grouping)
   GROUP BY Cname
-  HAVING Count(*) >= 100
+  HAVING Count(_) >= 100 -- Filter out groups (after grouping)
   ```
 
 ### ORDER BY
@@ -126,18 +126,26 @@ describes a **new relation** to generate
 
 ### NULL
 
-- Unknown values
+- Unknown values, can be used as a value for any data type
+- **If you do anything (> = <) with NULL (except IS), you’ll just get NULL**
+- `NULL` is falsey
+  - `WHERE NULL` === `WHERE FALSE`
 - Ternary
-  - Result can be TRUE > UNKNOWN > FALSE ==(按这个 priority 分辨)==
-  - If **NULL** in **comparison operation (=)**, no rows will be returned.
+  - `TRUE`
+    - If evaluate to `TRUE`
+  - `FALSE`
+    - If evaluate to `FALSE` regardless
+  - `NULL`
+    - if it depends on the `NULL` value.
+  - Result can be TRUE > UNKNOWN > FALSE
+- If **NULL** in **comparison operation (=)**, no rows will be returned.
   - `TRUE` dominates in `OR` operations (anything OR `TRUE` is `TRUE`).
   - `FALSE` dominates in `AND` operations (anything AND `FALSE` is `FALSE`).
   - `NULL` (Unknown) propagates when the result can't be definitively determined by the other operand.
-- Any comparison with NULL gets unknown result
-- `<expression> = TRUE`
-- `<expression> = FALSE`
-- `<expression> IS NULL` (not `= NULL`).
 - Example
+  - `<expression> = TRUE`
+  - `<expression> = FALSE`
+  - `<expression> IS NULL` (not `= NULL`).
   - `SELECT 3 = NULL;` - UNKNOWN
   - `SELECT NULL = NULL;` - UNKNOWN
   - `SELECT NULL IS NULL;` - TRUE

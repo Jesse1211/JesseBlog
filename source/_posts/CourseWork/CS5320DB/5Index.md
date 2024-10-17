@@ -9,19 +9,20 @@ categories:
 
 - Binary search
 - B+ tree indexes
+  - Average **fanout** (i.e., number of child nodes) is 133
   - traverse to find interesting leaves
-  - Handle _equality and inequality_
-    - Indexes in _sort order_
+  - Handle **equality and inequality**
+    - Indexes in **sort order**
     - Consecutive keys stored close together
-  - Composite keys: useful for conditions on key _prefix_
+  - Composite keys: useful for conditions on key **prefix**
     - Keys with same prefix value stored close together
 - Hash index: evaluate hash function to find buckets (key hash values)
   - buckets: a storage location which f(entries) are same
-  - Handle _equality_
+  - Handle **equality**
     - Consecutive keys might not close
     - Similar hash value $\neq$ similar key value
-  - Composite Keys: Condition must constrain _all components_ instead of prefix
-    - Keys with _same prefix_ may be stored far apart
+  - Composite Keys: Condition must constrain **all components** instead of prefix
+    - Keys with **same prefix** may be stored far apart
 - `CREATE INDEX <index-name> ON <table> USING <method> (<column-list>)`
 
 ### Index
@@ -46,8 +47,8 @@ categories:
 - P - Page as a Node
   - contains K and R
 - K - Key
-  - Indexed value, _ordered_
-  - K(i): These are the search key values. They help define the boundaries or the ranges of data that each reference (R(i)) covers.
+  - Indexed value, **ordered**
+  - K(i): search key values. help define the boundaries or the ranges of data that each reference (R(i)) covers.
   - Holly, Olivia: R points to different P
 
 #### Inner Nodes - R(0), K(1), R(1), K(2),...
@@ -65,15 +66,15 @@ categories:
 - equality predicates: `WHERE Sname = 'Alan'`
   1.  Start at root node: Searching for entries with key value V
   2.  Until reaching a leaf node:
-      - Search for i such that _V ≥ K(i), V < K(i+1)_
-      - Follow associated _reference R(i)_
+      - Search for i such that **V ≥ K(i), V < K(i+1)**
+      - Follow associated **reference R(i)**
   3.  At leaf node:
-      - Search for i such that _K(i) = V_
+      - Search for i such that **K(i) = V**
       - Retrieve data from R(i) if found, otherwise return empty
-- inequality predicates: `WHERE gpa > 3`
-  - Searching for index entries with _key value from [L,U]_
-  - Use equality search procedure to _find entry with value L_
-  - Follow links between leaf nodes until _reaching value U_
+- **inequality** predicates: `WHERE gpa > 3`
+  - Searching for index entries with **key value from [L,U]**
+  - Use equality search procedure to **find entry with value L**
+  - Follow links between leaf nodes until **reaching value U**
   - Retrieve referenced data on the way
 
 #### Linking leaf Nodes (B+)
@@ -83,10 +84,10 @@ categories:
 
 ### Composite keys
 
-- _multiple columns_ $\in$ Index search key
-- _sort order_ for key comparisons
+- **multiple columns** $\in$ Index search key
+- **sort order** for key comparisons
   - `(a, b, c)`: a first, then b, then c
-- Can use index for (in)equalities on _prefix_ of key columns
+- Can use index for (in)equalities on **prefix** of key columns
   - Restriction to Key Prefix: **Cannot skip first column(s)**
 
 ### Postgres SQL Query
@@ -100,21 +101,31 @@ categories:
 
 ### Clustered index
 
-- **index stores data** instead of references to data
-  - Actual table rows are organized (physically sorted) by index in physical storage.
+**index stores data** instead of references to data - Actual table rows are organized (physically sorted) by index in physical storage.
+
 - **at most one** clustered index per table
 - More efficient as it saves chasing **one reference**
 - **collocates** data with same key together (such as OrderData)
   - faster data retrieval for **Range, Ordered queries**
+  - data pages are sorted on the same index on building B+ tree.
+  - NOT sorted exactly, **keys** are roughly in the same order as data.
+  - Two records with close keys will likely be in the same page.
+- Cost: ~ 1 I/O per record
+
+### UnClustered Index
+
+- read a separate page for each of the records
+- if we want to read adjacent records
+  - read each of data pages they point to
+- Cost: ~ 1 I/O per page of records
 
 ### Tree Variants B+: handling balance when update
 
-- keep index balanced during updates
 - **Shallow**
-- order: # of entries in each node
+  - order: # of entries in each node
   - maximal is 2 $*$ order
   - under-full is less than order entries
-- with balancing:
+- keep index balanced during updates
   - **Balances** tree after insert/delete operations
   - Keeps the tree **compact**
   - Each node (except root) is **at least half full**!
@@ -132,28 +143,27 @@ categories:
 ### Static hashing (bucket pages)
 
 - Bad for dynamic data
-- Hash _bucket_ pages contain references to data
-  - may contain data directly
-- Hash buckets are associated with _hash value ranges_
+- Hash **bucket** pages contain references to data (OR data directly)
+- Hash buckets are associated with **hash value ranges**
 - Can use hash index to find entries with key V
   - Calculate hash value h for V as h(V)
-  - _Look up bucket page associated with h_
+  - **Look up bucket page associated with h**
 
 #### Update
 
-- Deletions - remove associated entries
+- Deletions
+  - remove associated entries
 - Insertions
   - Can add "overflow" pages (like ISAM index!)
   - Initial bucket page stores pointer to first overflow page
   - Overflow pages form **linked list** if more than one
 - **Rehash** if number of overflow pages increases
   - Create a new, larger hash table from the old table using different hash function.
-- ![[Screenshot 2024-09-23 at 5.46.04 PM.png|400]]
 
 #### Pros & Cons
 
 - Get data with one read
-- May need multiple reads (_> O(1)_) in case of overflow pages
+- May need multiple reads (**> O(1)**) in case of overflow pages
 - Will waste space if too many deletions (empty pages)
   - does not adjust number of buckets dynamically
 - Can use rehashing but creates significant overheads
@@ -174,20 +184,26 @@ categories:
 
 #### Insertions
 
-- Calculate hash value for key of new entry
-- Consult directory to identify current bucket
-- If bucket has space: insert.
-- If overflowing:
-  - Add new bucket page, rehash existing and new entry
-    - For rehashing: consider one more bit of hash value
-    - Expand directory if it does not consider enough bits
+1. Calculate hash value for key of new entry
+2. Consult directory to identify current bucket
+3. insert
+   - If bucket has space: Good
+   - If overflowing:
+     - Add new bucket page, rehash existing and new entry
+       - For rehashing: consider one more bit of hash value
+       - Expand directory if it does not consider enough bits
 
 #### Terminology
 
-- Global depth: num of hash bits in directory
+- Global depth: num of **hash bits in directory**
   - hash function to categorize the keys
-- Local depth: num hash bits in bucket
-  - to decide if overflow occurs.
+  - Max # of bits needed to tell which bucket an entry belongs to.
+- Local depth: **num hash bits in bucket**
+  - The # bits used to determine if an entry belongs to this bucket.
+  - to decide if overflow occurs (need to split)
+    - Before insert, local depth = global depth.
+    - Insert causes local depth to become > global depth; directory is doubled by copying it over and **fixing** pointer to split image page.
+- 当 bucket 满了以后, trigger doubling Global Depth 扩大 Directory, 然后回过头扩大 bucket 的 local depth 并且 split.
 
 #### Deletions
 
@@ -199,7 +215,7 @@ categories:
 #### Pros & Cons
 
 - Avoids overflow pages
-- No need for expensive rehashing
+- No expensive rehashing
   - Only rehash one bucket at a time
 - Need additional directory access
 - Need to double directory occasionally

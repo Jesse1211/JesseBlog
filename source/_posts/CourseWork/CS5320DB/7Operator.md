@@ -7,6 +7,13 @@ categories:
 
 # Terms
 
+### Query Processor
+
+- **Parser**: parse query
+- **Rewriter**: simplify query
+- **Query optimizer**: generates optimized execution plan
+- **Executor**: produces query result
+
 ### Query Plans
 
 - Describe query processing as **tree** about how to generate required data
@@ -63,26 +70,30 @@ categories:
 
 ### Cost Example
 
-`SELECT * FROM Enrollment WHERE CID='CS4320'`
+```SQL
+SELECT * FROM Enrollment WHERE CID='CS4320'
+```
 
-- studentNum = 60,000
-- enrollPerStuent = 10
-- sizePerEnrollEntry = 10 Bytes
-- bytesPerPage = 1,000 Bytes
-- entryPerPage = sizePerEnrollEntry / bytesPerPage = 1000 / 10 = 100
-- enrollPage =
-  - = enrollPerStuent \* studentNum / entryPerPage
-  - = 10 \* 60,000 / 1,00 = 6,000
-- (non indexed) Total Scan Cost = enrollPage = 6,000
-- (Clustered indexed) Total Scan Cost
-  - = innerNodeVisite + leafNodeNum
-  - = (treeHeight - 1) + enrollPage / entryPerPage
-  - = 2 + 6,000 / 100
-  - = 2 + 60
-  - = 62
-- (Unclustered indexed) Total Scan Cost
-  - = innerNodeVisite + leafNodeNum + enrollPage
-  - = 62 + 6000 = 6062
+- Preparation
+  - studentNum = 60,000
+  - enrollPerStuent = 10
+  - sizePerEnrollEntry = 10 Bytes
+  - bytesPerPage = 1,000 Bytes
+  - entryPerPage = sizePerEnrollEntry / bytesPerPage = 1000 / 10 = 100
+  - enrollPage =
+    - = enrollPerStuent \* studentNum / entryPerPage
+    - = 10 \* 60,000 / 1,00 = 6,000
+- Computation
+  - (non indexed) Total Scan Cost = enrollPage = 6,000
+  - (Clustered indexed) Total Scan Cost
+    - = innerNodeVisite + leafNodeNum
+    - = (treeHeight - 1) + enrollPage / entryPerPage
+    - = 2 + 6,000 / 100
+    - = 2 + 60
+    - = 62
+  - (Unclustered indexed) Total Scan Cost
+    - = innerNodeVisite + leafNodeNum + enrollPage
+    - = 62 + 6000 = 6062
 
 # Operators
 
@@ -191,8 +202,6 @@ For ep in Pages(P1):
 
 ### Equality Joins - Hash Join (Alternatives for Equality Joins)
 
-- Example
-  - ![[Screenshot 2024-09-25 at 1.43.47 PM.png|300]]
 - Phase 1
   - **Partition data** by hash values in join columns (partition by even and odd value)
   - **Read** data + **write** partitioned data
@@ -294,10 +303,6 @@ For ep in Pages(P1):
   - **B ≥ 1+(N+M)/B**
 - Rule of thumb:
   - if N>M: need **B ≥ 2 \* √(N)**
-
-### R-SMJ vs Hash Join
-
-![[Screenshot 2024-09-25 at 10.24.37 AM.png||300]]
 
 ## Projection $\pi$
 

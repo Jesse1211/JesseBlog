@@ -9,7 +9,7 @@ categories:
 - Reduce data movements using heuristics
 - Buffer manager manages "buffer pool"
   - Buffer pool: main memory reserved for DBMS
-  - **frames**: Divided into page-sized slots
+  - **frames**: page-sized slots
   - Stores meta-data about each slot
 
 ## Frame Properties
@@ -36,8 +36,8 @@ categories:
 - Cache Miss (requested page not cached)
   - Choose frame for storage data (replacement policy)
   - If frame contains dirty page: write to disk
-  - Read requested page from disk and store in frame
-  - Increase pin count and return page address
+    - Increase pin count and return page address
+  - Read requested page from disk and store in frame, Set pint count to 0
 
 ### LRU
 
@@ -49,8 +49,10 @@ categories:
 
 ### Sequential Flooding (when LRU is no good)
 
+- buffer pool’s contents are corrupted due to a sequential scan.
+- Since sequential scans read every page, the timestamps of pages read may not reflect which pages we actually want.
+  - the most recently used page is actually the most unneeded page.
 - DBMS often have particular access patterns
   - e.g. Scanning pages in round robin mode (circular or repeated sequence)
 - Least recently used page is used again soonest
   - LRU policy gets sub-optimal (inefficient)
-- ==Otherwise a reasonable strategy!==
