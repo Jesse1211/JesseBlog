@@ -196,7 +196,10 @@ navbar:
         Database: /categories/Course-work/CS-5320-Database/
         Programming Languages and Logics: /categories/Course-work/CS5110-PL/
         Computer Network: /categories/Course-work/CS5456-Network/
-
+    LeetCode:
+      icon: fa-regular fa-code
+      submenus:
+        Quick Redirect: https://leetcode.study
     About:
       icon: fa-regular fa-user
       submenus:
