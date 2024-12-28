@@ -121,7 +121,7 @@ home_banner:
   # Home banner subtitle
   subtitle: # TODO: 这是怎么做到的https://hitokoto.cn/
     text: [
-        "If you don't believe yourself, no one will do it for you - Kobe Bryant",
+        "Believe in the power of repetition",
       ] # subtitle text, array
     hitokoto: # 一言配置
       enable: false # Whether to enable hitokoto
@@ -193,17 +193,20 @@ navbar:
     Courses:
       icon: fa-regular fa-archive # can be empty
       submenus:
-        Database: /categories/Course-work/CS-5320-Database/
-        Programming Languages and Logics: /categories/Course-work/CS5110-PL/
-        Computer Network: /categories/Course-work/CS5456-Network/
-    LeetCode:
-      icon: fa-regular fa-code
+        Database: /2024/12/27/Courses/database/
+        Computer Network: /2024/10/13/Courses/network/
+    Frontend:
+      icon: fa-regular fa-window
       submenus:
-        Quick Redirect: https://leetcode.study
+        HTML: /2024/12/27/Frontend/HTML/
+        CSS: /2024/12/27/Frontend/CSS/
+        JavaScript: /2024/12/27/Frontend/JavaScript/
+        React: /2024/12/27/Frontend/React/
     About:
       icon: fa-regular fa-user
       submenus:
         Me: /about
+        LeetCode: https://leetcode.study
         Github: https://github.com/Jesse1211
         LinkedIn: https://www.linkedin.com/in/jesse-liu-0613201b4/
         Email: mailto:zl942@cornell.edu
