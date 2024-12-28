@@ -1,7 +1,7 @@
 ---
-title: Cornell CS ⅘456
+title: Cornell CS ⅘456 Network
 categories:
-  - Course-work
+  - Course
   - CS5456-Network
 ---
 

@@ -192,16 +192,10 @@ navbar:
       icon: fa-regular fa-house # can be empty
     Courses:
       icon: fa-regular fa-archive # can be empty
-      submenus:
-        Database: /2024/12/27/Courses/database/
-        Computer Network: /2024/10/13/Courses/network/
+      path: /categories/Course
     Frontend:
       icon: fa-regular fa-window
-      submenus:
-        HTML: /2024/12/27/Frontend/HTML/
-        CSS: /2024/12/27/Frontend/CSS/
-        JavaScript: /2024/12/27/Frontend/JavaScript/
-        React: /2024/12/27/Frontend/React/
+      path: /categories/Front-End
     About:
       icon: fa-regular fa-user
       submenus:

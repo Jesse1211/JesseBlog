@@ -1,7 +1,7 @@
 ---
-title: Cornell CS ⅘320
+title: Cornell CS ⅘320 Database
 categories:
-  - Course-work
+  - Course
   - CS-5320-Database
 ---
 
