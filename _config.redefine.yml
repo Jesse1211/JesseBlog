@@ -196,6 +196,9 @@ navbar:
     Frontend:
       icon: fa-regular fa-window
       path: /categories/Front-End
+    Backend:
+      icon: fa-regular fa-server
+      path: /categories/Back-End
     About:
       icon: fa-regular fa-user
       submenus:
