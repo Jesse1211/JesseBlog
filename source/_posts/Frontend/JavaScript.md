@@ -137,7 +137,7 @@ const promise = new Promise(function (resolve, reject) {
 });
 ```
 
-- resolve 和 reject 的作用域只有起始函数, 不包括 then 以及其他序列 (不影响外部代码)；
+- resolve 和 reject 的作用域只有起始函数, 不包括 then 以及其他序列 (不影响外部代码);
 - resolve 和 reject 不能终止函数运行, 直到 return.
 
 #### Promise 特点:
@@ -163,22 +163,39 @@ const promise = new Promise(function (resolve, reject) {
 ### var, let, const
 
 - **Redefinition**: 改 type
-- `var`: Allowed
-- `let`, `const`: Not allowed
+  - `var`: Allowed
+  - `let`, `const`: Not allowed
 - **Reassignment**: 变 content
-- `var`, `let`: Allowed
-- `const`: Not allowed (except for object/array properties)
+  - `var`, `let`: Allowed
+  - `const`: Not allowed (except for object/array properties)
 - **Hoisting**: 提升变量
-- `console.log(x); var x = 5; // Undefined, due to hoisting. `
-- `console.log(y); let y = 10; // Error, no hoisting with let.`
   - `var`: Hoisted
+    - `console.log(x); var x = 5; // Undefined, due to hoisting. `
   - `let`, `const`: Not hoisted (Temporal Dead Zone)
+    - `console.log(y); let y = 10; // Error, no hoisting with let.`
 - **Scope**:
-- `var`: Function-scoped
-- `let`, `const`: Block-scoped
+
+  - `var`: Function-scoped
+  - `let`, `const`: Block-scoped
+
+  ```javascript
+  function testLetConst() {
+    if (true) {
+      var x = 10;
+      let y = 20;
+      const z = 30;
+    }
+    console.log(x); // 10，因为 `var` 在函数作用域内有效
+    console.log(y); // ReferenceError: y is not defined
+    console.log(z); // ReferenceError: z is not defined
+  }
+
+  testLetConst();
+  ```
+
 - **Loops by while / for**:
-- `var`, `let`: Supported
-- `const`: Supported for arrays/objects, not primitive values.
+  - `var`, `let`: Supported
+  - `const`: Supported for arrays/objects, not primitive values.
 
 ### 数据存储形式 - 堆栈
 
@@ -223,7 +240,7 @@ const promise = new Promise(function (resolve, reject) {
 
 - undefined 表示一个变量没有被声明, 或者被声明了但没有被赋值(未初始化) , 一个没有传入实参的形参变量的值为 undefined, 如果一个函数什么都不返回, 则该函数默认返回 undefined.
 
-  - Javascript 将未赋值的变量默认值设为 undefined ；Javascript 从来不会将变量设为 null
+  - Javascript 将未赋值的变量默认值设为 undefined ; Javascript 从来不会将变量设为 null
 
   ```javascript
   // 变量被声明但未赋值
@@ -270,8 +287,11 @@ const promise = new Promise(function (resolve, reject) {
 ### 装箱拆箱
 
 - 装箱 `new Number()`
-- 拆箱 `obj.valueOf()` - 如果由 value 那就返回, 否则返回对象本身
-- `toPrimitive(input, type)`
+- 拆箱 `obj.valueOf()`
+
+  - 如果有 value 那就返回, 否则返回对象本身
+
+`toPrimitive(input, type)`
 
 1.  如果 input = 原始类型的值 - 直接返回
 2.  `input.valueOf()` = 原始类型, 直接返回
@@ -308,7 +328,7 @@ const promise = new Promise(function (resolve, reject) {
   - setTimeout
 
 - 节流：是指连续触发事件但是在 n 秒中只执行一次函数
-  - 时间戳 / 定时器
+  - 时间戳 Timestamp / 定时器 Timers
 
 ### 垃圾回收机制和内存机制
 
@@ -368,15 +388,15 @@ const { a, add } = require("./module.js");
 
 ### require 与 import 的区别
 
-- require 是 CommonJS 规范的模块化语法, import 是 ECMAScript 6 规范的模块化语法；
+- require 是 CommonJS 规范的模块化语法, import 是 ECMAScript 6 规范的模块化语法;
 
-- require 是运行时加载, import 是编译时加载；
+- require 是运行时加载, import 是编译时加载;
 
-- require 可以写在代码的任意位置, import 只能写在文件的最顶端且不可在条件语句或函数作用域中使用；
+- require 可以写在代码的任意位置, import 只能写在文件的最顶端且不可在条件语句或函数作用域中使用;
 
-- require 通过 module.exports 导出的值就不能再变化, import 通过 export 导出的值可以改变；
+- require 通过 module.exports 导出的值就不能再变化, import 通过 export 导出的值可以改变;
 
-- require 通过 module.exports 导出的是 exports 对象, import 通过 export 导出是指定输出的代码；
+- require 通过 module.exports 导出的是 exports 对象, import 通过 export 导出是指定输出的代码;
 
 - require 运行时才引入模块的属性所以性能相对较低, import 编译时引入模块的属性所所以性能稍高.
 
@@ -387,39 +407,89 @@ const { a, add } = require("./module.js");
 - event.target：返回触发事件的元素
 - event.currentTarget：返回绑定事件的元素(相当于事件中 this)
 
+```javascript
+document.getElementById("parent").addEventListener("click", function (event) {
+  console.log("target:", event.target); // 实际触发点击的子元素
+  console.log("currentTarget:", event.currentTarget); // 绑定事件的父元素
+});
+```
+
 ### prototype 和 proto 的关系是什么
 
-- prototype: 所有函数都会有一个 prototype 属性, 它就是函数的原型对象
+- prototype: 所有 function / class 都会有一个 prototype 属性, 它就是函数的原型对象
 - proto: 所有实例对象上都会有一个 proto 属性, 它等同于函数的原型对象
+
+```javascript
+function Person() {}
+const person = new Person();
+
+console.log(Person.prototype); // 构造函数的原型对象
+console.log(person.__proto__); // 实例对象的 __proto__
+
+// 关系
+console.log(Person.prototype === person.__proto__); // true
+```
 
 ### 原型和原型链
 
-- **原型：**portoType 这个属性就是函数的原型
-- **原型链：**1.所有对象都有原型, 而原型本身就是对象, 所以原型也有自己的原型对象, 就形成原型链
-  如果对象本身没有属性, 则就会去原型链上去找. Object 原型对象的原型值为 null
+- **原型** portoType 这个属性就是函数的原型
+- **原型链**
+  1. 所有对象都有原型, 而原型本身就是对象, 所以原型也有自己的原型对象, 就形成原型链
+  2. 如果对象本身没有属性, 则就会去原型链上去找. Object 原型对象的原型值为 null
 
 ### new 操作符具体做了什么？
 
 - 在内存创建一个新对象
 - 把构造函数中 this 指向新建的对象
 - 会在新对象上添加一个**proto**属性,指向函数的原型对象 prototype
-- 判断函数返回值,如果值是引用类型就直接返回值；否则返回 this(创建的新对象)
+- 判断函数返回值,如果值是引用类型就直接返回值; 否则返回 this(创建的新对象)
+
+```javascript
+function Person(name) {
+  this.name = name;
+  return { age: 30 }; // 返回引用类型
+}
+
+const person = new Person("Alice");
+
+console.log(person); // { age: 30 }
+console.log(person.name); // undefined (this 被覆盖)
+```
 
 ### 什么是 AJAX？如何实现？
 
 ajax 是一种能够实现网页局部刷新的技术, 可以使网页异步刷新.
 
-1. 创建核心对象 XMLhttpRequest；
+1. 创建核心对象 XMLhttpRequest;
 
-2. 利用 open 方法打开与服务器的连接；
+2. 利用 open 方法打开与服务器的连接;
 
-3. 利用 send 方法发送请求；("POST"请求时, 还需额外设置请求头)
+3. 利用 send 方法发送请求; ("POST"请求时, 还需额外设置请求头)
 
 4. 监听服务器响应, 接收返回值.
 
 ### Javascript 作用域链?
 
 如果当前作用域没有找到属性或方法, 会向上层作用域查找, 直至全局函数, 这种形式就是作用域链
+
+```javascript
+const globalVar = "global";
+
+function outer() {
+  const outerVar = "outer";
+
+  function inner() {
+    const innerVar = "inner";
+
+    console.log(innerVar); // 查找到 inner 函数作用域
+    console.log(outerVar); // 查找到 outer 函数作用域
+    console.log(globalVar); // 查找到全局作用域
+  }
+
+  inner();
+}
+outer();
+```
 
 ### 为什么 JS 是单线程, 而不是多线程 [常考]
 
@@ -436,22 +506,38 @@ ajax 是一种能够实现网页局部刷新的技术, 可以使网页异步刷�
 
 ### session 与 cookie 的区别
 
-- session 保存在服务器, 客户端不知道其中的信息；
-- cookie 保存在客户端, 服务器能够知道其中的信息.
-- session 中保存的是对象, cookie 中保存的是字符串.
-- session 不能区分路径, 同一个用户在访问一个网站期间, 所有的 session 在任何一个地方都可以访问到. 而 cookie 中如果设置了路径参数, 那么同一个网站中不同路径下的 cookie 互相是访问不到的.
-- cookies 是干嘛的, 服务器和浏览器之间的 cookies 是怎么传的, httponly 的 cookies 和可读写的 cookie 有什么区别, 有无长度限制 ?
+- 保存位置
+  - session 保存在服务器, 客户端不知道其中的信息;
+  - cookie 保存在客户端, 服务器能够知道其中的信息.
+- 保存内容
+  - session 中保存的是对象
+  - cookie 中保存的是字符串.
+- 路径
+  - session 不能区分路径, 同一个用户在访问一个网站期间, 所有的 session 在任何一个地方都可以访问到.
+  - cookie 中如果设置了路径参数, 那么同一个网站中不同路径下的 cookie 互相是访问不到的.
+
+#### cookies 是干嘛的, 服务器和浏览器之间的 cookies 是怎么传的, httponly 的 cookies 和可读写的 cookie 有什么区别, 有无长度限制 ?
+
 - cookies 是一些存储在用户电脑上的小文件. 它是被设计用来保存一些站点的用户数据, 这样能够让服务器为这样的用户定制内容, 后者页面代码能够获取到 cookie 值然后发送给服务器. 比如 cookie 中存储了所在地理位置, 以后每次进入地图就默认定位到改地点即可.
 
 ### 请描述一下 cookies, sessionStorage 和 localStorage 的区别
 
 - 共同点
-- 都是保存在浏览器端, 且同源的.
+  - 都是保存在浏览器端, 且同源的.
 - 区别
-- cookie 数据始终在同源的 http 请求中携带(即使不需要) , 即 cookie 在浏览器和服务器间来回传递. 而 sessionStorage 和 localStorage 不会自动把数据发给服务器, 仅在本地保存. cookie 数据还有路径(path) 的概念, 可以限制 cookie 只属于某个路径下. 存储大小限制也不同, cookie 数据不能超过 4k, 同时因为每次 http 请求都会携带 cookie, 所以 cookie 只适合保存很小的数据, 如会话标识.
-- sessionStorage 和 localStorage 虽然也有存储大小的限制, 但比 cookie 大得多, 可以达到 5M 或更大.
-- 数据有效期不同, sessionStorage：仅在当前浏览器窗口关闭前有效, 自然也就不可能持久保持；localStorage：始终有效, 窗口或浏览器关闭也一直保存, 因此用作持久数据；cookie 只在设置的 cookie 过期时间之前一直有效, 即使窗口或浏览器关闭.
-- 作用域不同, sessionStorage 在不同的浏览器窗口中不共享, 即使是同一个页面；cookie 和 localStorage 在所有同源窗口中都是共享的.
+  - 数据传递
+    - cookie 数据始终在同源的 http 请求中携带(即使不需要) , 即 cookie 在浏览器和服务器间来回传递.
+    - sessionStorage 和 localStorage 不会自动把数据发给服务器, 仅在本地保存.
+  - 路径
+    - cookie 数据还有路径(path) 的概念, 可以限制 cookie 只属于某个路径下. 存储大小限制也不同, cookie 数据不能超过 4k, 同时因为每次 http 请求都会携带 cookie, 所以 cookie 只适合保存很小的数据, 如会话标识.
+    - sessionStorage 和 localStorage 虽然也有存储大小的限制, 但比 cookie 大得多, 可以达到 5M 或更大.
+  - 有效期
+    - sessionStorage：仅在当前浏览器窗口关闭前有效, 自然也就不可能持久保持;
+    - localStorage：始终有效, 窗口或浏览器关闭也一直保存, 因此用作持久数据;
+    - cookie 只在设置的 cookie 过期时间之前一直有效, 即使窗口或浏览器关闭.
+  - 作用域
+    - sessionStorage 在不同的浏览器窗口中不共享, 即使是同一个页面;
+    - cookie 和 localStorage 在所有同源窗口中都是共享的.
 
 ### 验证码是干嘛的, 是为了解决什么安全问题.
 
