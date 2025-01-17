@@ -1,13 +1,11 @@
 ---
-title: C# & DotNet
+title: C#
 categories:
   - Back-End
   - C#
 ---
 
-# C\#
-
-## Types
+# Types
 
 | 类别                    | 描述     |                                       |
 | ----------------------- | -------- | ------------------------------------- |
@@ -24,16 +22,16 @@ categories:
 - Struct
   - 可以用于 Enum, can have constructors, properties, and methods, but cannot have an explicit parameterless constructor in C#
 
-## Delegate
+# Delegate
 
 - type-safe function pointer
 - 通过使用 `+=`, `-=`, invoke 会调用所有的 delegate functions
 
-## 堆和栈
+# 堆和栈
 
 值类型的数据被保存在栈(stack)上，引用类型的数据被保存在堆(heap)上，当值类型作为参数传递给函数时，会将其复制到新的内存空间中，因此在函数中对该值类型的修改不会影响原始值类型
 
-## 拆箱和装箱
+# 拆箱和装箱
 
 - 装箱
   - 将栈 (value type) 中的内容迁移到堆上 (reference type)
@@ -41,24 +39,24 @@ categories:
 - 拆箱
   - 把引用转成值类型，把堆中的内容转移到栈上去
 
-```csharp
+```CSharp
 int i=3;
 objcet o=i;//装箱
 i=(int)o //拆箱
 ```
 
-## == 和 Equals 的区别
+# == 和 Equals 的区别
 
 - Equals 继承自 Object，一般用于比较对象内容是否相等
 - == 比较 type value 值是否相等，reference value 比较地址是否相等
 
-## 内存泄漏
+# 内存泄漏
 
 - 静态引用：如果一个静态对象长时间存活且占用大量内存，并且该对象不会被释放或重置，可能导致内存泄漏
 - 不使用的引用对象没有置 null
 - 委托或事件没有解除注册
 
-## Virtual & Abstract
+# Virtual & Abstract
 
 - 相同点
   - 抽象方法和虚方法都可以供派生类重写, 派生类重写父类的方法都要使用关键字 override 来声明。
@@ -68,7 +66,7 @@ i=(int)o //拆箱
   - 抽象方法只能在抽象类中声明,虚方法不是，如果类包含抽象方法,那么该类也必须声明为抽象类；
   - 抽象方法使用修饰符 abstract 声明,虚方法使用方法修饰符 virtual 声明；
 
-```cs
+```CSharp
 public abstract class AbstProgram            // 必须声明为抽象类
 {
   public abstract string abstMethod();     // 抽象方法
@@ -95,7 +93,7 @@ public class Subclass: AbstProgram
 }
 ```
 
-## Interface & abstract
+# Interface & abstract
 
 - 相同点
 
@@ -114,7 +112,7 @@ public class Subclass: AbstProgram
   - 在抽象类中, 新增一个方法的话, 继承类中可以不用作任何处理；而对于接口来说, 则需要修改继承类, 提供新定义的方法；
   - 接口用于规范, 更强调契约, 抽象类用于共性, 强调父子。抽象类是一类事物的高度聚合, 那么对于继承抽象类的子类来说, 对于抽象类来说, 属于"Is A"的关系; 而接口是定义行为规范, 强调"Can Do"的关系, 因此对于实现接口的子类来说, 相对于接口来说, 是"行为需要按照接口来完成"；
 
-```cs
+```CSharp
 public interface IMyInterface       // 接口
 {
     public void intMethod();
@@ -140,7 +138,7 @@ public class SubClass: AbstProgram, IMyInterface
 }
 ```
 
-## Interface & Class
+# Interface & Class
 
 - 相同点
 
@@ -155,7 +153,7 @@ public class SubClass: AbstProgram, IMyInterface
   - 接口只包含方法或属性的声明，不包含方法的实现， 而类定义的方法必须实现；
   - 表达的含义不同,接口定义了所有类继承接口时应遵循的"语法合同"；接口定义了语法合同 "是什么" 部分,派生类定义了语法合同 "怎么做" 部分；
 
-```cs
+```CSharp
 interface IMyInterface
 {
     void MethodToImplement();           // 接口成员
@@ -177,14 +175,14 @@ class InterfaceImplementer: IMyInterface
 }
 ```
 
-## virtual、sealed、override 和 abstract 的区别
+# virtual、sealed、override 和 abstract 的区别
 
 - virtual 声明虚方法的关键字，说明该方法可以被重写。
 - sealed 说明该类不可被继承，也就是声明该类为密封类。
 - override 重写基类/父类的方法 。
 - abstract 声明抽象类和抽象方法的关键字，抽象方法不提供实现，由子类实现，抽象类不可实例化。
 
-```cs
+```CSharp
 public abstract class Program
 {
     public abstract string abstmethod();     // abstract
@@ -204,14 +202,14 @@ public sealed class SubClass: Program      // sealed
 }
 ```
 
-## const 与 readonly 的区别
+# const 与 readonly 的区别
 
 - const 字段只能在该字段的声明中初始化；而 readonly 字段可以在声明或构造函数中初始化。因此，根据所使用的构造函数，readonly 字段可能具有不同的值。
 - const 字段是编译时常数，而 readonly 字段是运行时常数，是运行时确认的（一个在编译时就确定了，一个在运行时才确定）。
 - const 默认就是静态的，而 readonly 如果设置成静态的就必须显示声明。
 - const 对于引用类型的常数，可能的值只能是 string 和 null；而 readonly 可以是任何类型。
 
-```cs
+```CSharp
 class Program
 {
 public static readonly int NumberA = NumberB \* 10;
@@ -229,12 +227,12 @@ public static readonly int NumberB = 10;
 }
 ```
 
-## 重载 (override) 和重写 (overload) 有什么区别
+# 重载 (override) 和重写 (overload) 有什么区别
 
 - 重载: 当类包含两个名称相同但签名不同(方法名相同,参数列表不相同)的方法时发生方法重载。用方法重载来提供在语义上完成相同而功能不同的方法。(一个类中、多个方法)
 - 重写: 在类的继承中使用, 通过覆写子类方法可以改变父类虚方法的实现。(二个类以上)
 
-```cs
+```CSharp
 public class Program
 {
     // 重载(override)
@@ -263,7 +261,7 @@ public override void virtmethod()
 }
 ```
 
-## 结构体和类的区别
+# 结构体和类的区别
 
 - 结构体是值类型，类是引用类型。
 - 结构体常用于数据存储，类多用于行为。
@@ -271,7 +269,7 @@ public override void virtmethod()
 - 类可以为抽象类，结构体不支持抽象模式。
 - 结构体不支持无参构造函数，也不支持析构函数，并且不能有 Protected 修饰符。
 
-```cs
+```CSharp
 // Books 结构体实现
 struct Books
 {
@@ -282,13 +280,13 @@ struct Books
 };
 ```
 
-## ref 与 out 的区别
+# ref 与 out 的区别
 
 - 使用 ref 型参数时，传入的参数必须先被初始化；对 out 而言，必须在方法中对其完成初始化。
 - 使用 ref 和 out 时，在方法的参数和执行方法时，都要加 ref 或 out 关键字，以满足匹配。
 - out 适合用在需要 retrun 多个返回值的地方，而 ref 则用在需要被调用的方法修改调用者的引用的时候。
 
-```cs
+```CSharp
 class Program
 {
     public void test1(ref int i)
@@ -314,12 +312,12 @@ class Program
 }
 ```
 
-## 值类型和引用类型的区别
+# 值类型和引用类型的区别
 
 - 值类型: 就是一个包含实际数据的对象。即当定义一个值类型的变量时，C#会根据它所声明的类型，以栈方式分配一块大小相适应的存储区域给这个变量，随后对这个变量的读或写操作就直接在这块内存区域进行；
 - 引用类型: 一个引用类型的变量不存储它们所代表的实际数据，而是存储实际数据的引用。引用类型分两步创建：首先在栈上创建一个引用变量，然后在堆上创建对象本身，再把这个内存的句柄（也是内存的首地址）赋给引用变量；
 
-```cs
+```CSharp
 //引用类型（由于使用了'Class'）
 class SomeRef { public Int32 x; }
 
@@ -350,14 +348,14 @@ class Program
 }
 ```
 
-## 拆箱和装箱的定义及拆箱和装箱的性能影响？怎么解决?
+# 拆箱和装箱的定义及拆箱和装箱的性能影响？怎么解决?
 
 - 装箱: 值类型转换为引用类型;
 - 拆箱：引用类型转换为值类型；
 - 影响: 都涉及到内存的分配和对象的创建，有较大的性能影响；
 - 解决：使用泛型;
 
-```cs
+```CSharp
 public class Solution
 {
     static void Main(string[] args)
@@ -371,13 +369,13 @@ public class Solution
 }
 ```
 
-## 委托是什么？事件是不是委托？
+# 委托是什么？事件是不是委托？
 
 c# 中的委托（Delegate）类似于 c 或 c++ 中函数的指针。委托（Delegate） 是存有对某个方法的引用的一种引用类型变量。引用可在运行时被改变。委托（Delegate）特别用于实现事件和回调方法。所有的委托（Delegate）都派生自 System.Delegate 类。
 
 - 事件是特殊的委托，事件内部是基于委托来实现的。
 
-```cs
+```CSharp
 delegate int NumberChanger(int n);
 class TestDelegate
 {
@@ -413,11 +411,11 @@ class TestDelegate
 }
 ```
 
-## 构造函数 Constructor 是否可以被继承？是否可以被 Override 重载？
+# 构造函数 Constructor 是否可以被继承？是否可以被 Override 重载？
 
 Constructor 不可以被继承，因此不能被重写（Overriding），但可以被重载(Overloading)。
 
-```cs
+```CSharp
 public class Student
 {
     public int Age { get; }
@@ -450,24 +448,24 @@ public class Program
 }
 ```
 
-## String 类是否可以被继承？
+# String 类是否可以被继承？
 
 - String 类是 sealed 类故不可以继承。
 - 当对一个类应用 sealed 修饰符时，此修饰符会阻止其他类从该类继承。 在下面的示例中，类 SealedProgram 从类 DemoProgram 继承，但是任何类都不能从类 SealedProgram 继承。
 
-```cs
+```CSharp
 class DemoProgram { };
 sealed class SealedProgram: DemoProgram { };
 ```
 
-## Task 和 Thread 的区别
+# Task 和 Thread 的区别
 
 - Task 比较新，发布于.NET 4.5 版本，而 Thread 在.NET 1.1 版本。
 - Task 能结合新的 async/await 代码模型写代码, 而 Thread 则不支持。
 - Task 可以创建线程池，返回主线程，管理 api， 而 Thread 则不能。
 - Task 是多核多线程，Thread 是单核多线程。
 
-```cs
+```CSharp
 public class Solution
 {
   static void Main()
@@ -502,7 +500,7 @@ public class ThreadTest
 }
 ```
 
-## 死锁的必要条件？怎么克服?
+# 死锁的必要条件？怎么克服?
 
 - 死锁的原因主要是:
   - 因为系统资源不足。
@@ -520,32 +518,14 @@ public class ThreadTest
   - 检测死锁：允许系统在运行过程中发生死锁，但可设置检测机构及时检测死锁的发生，并采取适当措施加以清除。
   - 解除死锁：当检测出死锁后，便采取适当措施将进程从死锁状态中解脱出来。
 
-## Error 和 Exception 有什么区别？
+# Error 和 Exception 有什么区别？
 
 - Error 是不可捕捉到的，无法采取任何恢复的操作。Except 表示可恢复的例外，这是可捕捉到的。 举个例子： 跟儿子逛街，儿子看中一个奥特曼是 Exception，没带钱是 Error。
 - Error 更多的表示系统方面的问题,如系统崩溃,虚拟机错误,内存空间不足,方法调用栈溢出，内存溢出等；而 Exception 类表示程序可以捕获到的异常（比方说 c#的 try-catch 语句），可以捕获且可能恢复，出现这类异常，应该及时处理，使得程序正常运行，从而避免影响整个项目的运行。
 
-## UDP 和 TCP 连接有什么区别?
+# UDP 和 TCP 连接有什么区别?
 
 - TCP 是传输控制协议，提供的是面向连接的，是可靠的，字节流服务，TCP 提供超时重拨，检验数据功能。
 - UDP 是用户数据报协议，是一个简单的面向数据报的传输协议，是不可靠的连接。
 - TCP 保证数据正确性，UDP 可能丢包，TCP 保证数据顺序，UDP 不保证。
 - TCP 对系统资源的要求较多, UDP 较少。
-
-# ASP.NET
-
-- NET Core 和.NET Framework 的区别和.NET Core 优点
-  - .NET Core 和.NET Framework 都是用于构建 Windows 和 Web 应用程序的跨平台框架。.NET Core 是开源的，跨平台的，它可以在 Windows，macOS，Linux 等操作系统上运行。而.NET Framework 只能运行在 Windows 系统上。
-  - 优点：.NET Core 具有更小的文件大小、更快的启动时间和更好的性能表现，同时还可以使用新的 C#语言功能。
-- 在.NET Core 中，内置依赖注入服务的生命周期
-  - .NET CROE 内置依赖注入的三种生命周期：
-  1.  Transient（瞬时）：即用即建，用后即弃。就是每次获取这个服务的实例时都要创建一个这个服务的实例。
-  2.  Scoped（作用域）：这种类型的服务实例保存在当前依赖注入容器(IServiceProvider)上。在同作用域,服务每个请求只创建一次。
-  3.  Singleton（单例）：服务请求时只创建实例化一次，其后相同请求都延用这个服务
-- 请简述.NET Core 中的中间件（Middleware）的作用及其使用方法
-  - 中间件（Middleware）是.NET Core 中的一种特殊组件，它可以处理 HTTP 请求和响应，并把请求传递到下一个中间件或终止请求。中间件在 ASP.NET 应用程序中扮演着非常重要的角色，能够为应用程序提供丰富的功能和服务，例如路由、认证、授权、缓存、日志、异常处理等。
-  - 使用中间件在.NET Core 应用程序中添加组件或服务非常简单。ASP.NET Core 加载中间件的顺序与它们添加到中间件管道的顺序相同，因此可以按照需要添加中间件并调整它们的顺序。
-
-# Design Pattern
-
-## Singleton
