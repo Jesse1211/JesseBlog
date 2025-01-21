@@ -5,7 +5,9 @@ categories:
   - C#
 ---
 
-# Types
+# C#
+
+## Types
 
 | 类别                    | 描述     |                                       |
 | ----------------------- | -------- | ------------------------------------- |
@@ -22,16 +24,16 @@ categories:
 - Struct
   - 可以用于 Enum, can have constructors, properties, and methods, but cannot have an explicit parameterless constructor in C#
 
-# Delegate
+## Delegate
 
 - type-safe function pointer
 - 通过使用 `+=`, `-=`, invoke 会调用所有的 delegate functions
 
-# 堆和栈
+## 堆和栈
 
 值类型的数据被保存在栈(stack)上，引用类型的数据被保存在堆(heap)上，当值类型作为参数传递给函数时，会将其复制到新的内存空间中，因此在函数中对该值类型的修改不会影响原始值类型
 
-# 拆箱和装箱
+## 拆箱和装箱
 
 - 装箱
   - 将栈 (value type) 中的内容迁移到堆上 (reference type)
@@ -45,18 +47,18 @@ objcet o=i;//装箱
 i=(int)o //拆箱
 ```
 
-# == 和 Equals 的区别
+## == 和 Equals 的区别
 
 - Equals 继承自 Object，一般用于比较对象内容是否相等
 - == 比较 type value 值是否相等，reference value 比较地址是否相等
 
-# 内存泄漏
+## 内存泄漏
 
 - 静态引用：如果一个静态对象长时间存活且占用大量内存，并且该对象不会被释放或重置，可能导致内存泄漏
 - 不使用的引用对象没有置 null
 - 委托或事件没有解除注册
 
-# Virtual & Abstract
+## Virtual & Abstract
 
 - 相同点
   - 抽象方法和虚方法都可以供派生类重写, 派生类重写父类的方法都要使用关键字 override 来声明。
@@ -93,7 +95,7 @@ public class Subclass: AbstProgram
 }
 ```
 
-# Interface & abstract
+## Interface & abstract
 
 - 相同点
 
@@ -138,7 +140,7 @@ public class SubClass: AbstProgram, IMyInterface
 }
 ```
 
-# Interface & Class
+## Interface & Class
 
 - 相同点
 
@@ -175,7 +177,7 @@ class InterfaceImplementer: IMyInterface
 }
 ```
 
-# virtual、sealed、override 和 abstract 的区别
+## virtual、sealed、override 和 abstract 的区别
 
 - virtual 声明虚方法的关键字，说明该方法可以被重写。
 - sealed 说明该类不可被继承，也就是声明该类为密封类。
@@ -202,7 +204,7 @@ public sealed class SubClass: Program      // sealed
 }
 ```
 
-# const 与 readonly 的区别
+## const 与 readonly 的区别
 
 - const 字段只能在该字段的声明中初始化；而 readonly 字段可以在声明或构造函数中初始化。因此，根据所使用的构造函数，readonly 字段可能具有不同的值。
 - const 字段是编译时常数，而 readonly 字段是运行时常数，是运行时确认的（一个在编译时就确定了，一个在运行时才确定）。
@@ -227,7 +229,7 @@ public static readonly int NumberB = 10;
 }
 ```
 
-# 重载 (override) 和重写 (overload) 有什么区别
+## 重载 (override) 和重写 (overload) 有什么区别
 
 - 重载: 当类包含两个名称相同但签名不同(方法名相同,参数列表不相同)的方法时发生方法重载。用方法重载来提供在语义上完成相同而功能不同的方法。(一个类中、多个方法)
 - 重写: 在类的继承中使用, 通过覆写子类方法可以改变父类虚方法的实现。(二个类以上)
@@ -261,7 +263,7 @@ public override void virtmethod()
 }
 ```
 
-# 结构体和类的区别
+## 结构体和类的区别
 
 - 结构体是值类型，类是引用类型。
 - 结构体常用于数据存储，类多用于行为。
@@ -312,7 +314,7 @@ class Program
 }
 ```
 
-# 值类型和引用类型的区别
+## 值类型和引用类型的区别
 
 - 值类型: 就是一个包含实际数据的对象。即当定义一个值类型的变量时，C#会根据它所声明的类型，以栈方式分配一块大小相适应的存储区域给这个变量，随后对这个变量的读或写操作就直接在这块内存区域进行；
 - 引用类型: 一个引用类型的变量不存储它们所代表的实际数据，而是存储实际数据的引用。引用类型分两步创建：首先在栈上创建一个引用变量，然后在堆上创建对象本身，再把这个内存的句柄（也是内存的首地址）赋给引用变量；
@@ -348,7 +350,7 @@ class Program
 }
 ```
 
-# 拆箱和装箱的定义及拆箱和装箱的性能影响？怎么解决?
+## 拆箱和装箱的定义及拆箱和装箱的性能影响？怎么解决?
 
 - 装箱: 值类型转换为引用类型;
 - 拆箱：引用类型转换为值类型；
@@ -369,7 +371,7 @@ public class Solution
 }
 ```
 
-# 委托是什么？事件是不是委托？
+## 委托是什么？事件是不是委托？
 
 c# 中的委托（Delegate）类似于 c 或 c++ 中函数的指针。委托（Delegate） 是存有对某个方法的引用的一种引用类型变量。引用可在运行时被改变。委托（Delegate）特别用于实现事件和回调方法。所有的委托（Delegate）都派生自 System.Delegate 类。
 
@@ -411,7 +413,7 @@ class TestDelegate
 }
 ```
 
-# 构造函数 Constructor 是否可以被继承？是否可以被 Override 重载？
+## 构造函数 Constructor 是否可以被继承？是否可以被 Override 重载？
 
 Constructor 不可以被继承，因此不能被重写（Overriding），但可以被重载(Overloading)。
 
@@ -448,7 +450,7 @@ public class Program
 }
 ```
 
-# String 类是否可以被继承？
+## String 类是否可以被继承？
 
 - String 类是 sealed 类故不可以继承。
 - 当对一个类应用 sealed 修饰符时，此修饰符会阻止其他类从该类继承。 在下面的示例中，类 SealedProgram 从类 DemoProgram 继承，但是任何类都不能从类 SealedProgram 继承。
@@ -458,7 +460,7 @@ class DemoProgram { };
 sealed class SealedProgram: DemoProgram { };
 ```
 
-# Task 和 Thread 的区别
+## Task 和 Thread 的区别
 
 - Task 比较新，发布于.NET 4.5 版本，而 Thread 在.NET 1.1 版本。
 - Task 能结合新的 async/await 代码模型写代码, 而 Thread 则不支持。
@@ -500,7 +502,9 @@ public class ThreadTest
 }
 ```
 
-# 死锁的必要条件？怎么克服?
+# 其他
+
+## 死锁的必要条件？怎么克服?
 
 - 死锁的原因主要是:
   - 因为系统资源不足。
@@ -518,12 +522,12 @@ public class ThreadTest
   - 检测死锁：允许系统在运行过程中发生死锁，但可设置检测机构及时检测死锁的发生，并采取适当措施加以清除。
   - 解除死锁：当检测出死锁后，便采取适当措施将进程从死锁状态中解脱出来。
 
-# Error 和 Exception 有什么区别？
+## Error 和 Exception 有什么区别？
 
 - Error 是不可捕捉到的，无法采取任何恢复的操作。Except 表示可恢复的例外，这是可捕捉到的。 举个例子： 跟儿子逛街，儿子看中一个奥特曼是 Exception，没带钱是 Error。
 - Error 更多的表示系统方面的问题,如系统崩溃,虚拟机错误,内存空间不足,方法调用栈溢出，内存溢出等；而 Exception 类表示程序可以捕获到的异常（比方说 c#的 try-catch 语句），可以捕获且可能恢复，出现这类异常，应该及时处理，使得程序正常运行，从而避免影响整个项目的运行。
 
-# UDP 和 TCP 连接有什么区别?
+## UDP 和 TCP 连接有什么区别?
 
 - TCP 是传输控制协议，提供的是面向连接的，是可靠的，字节流服务，TCP 提供超时重拨，检验数据功能。
 - UDP 是用户数据报协议，是一个简单的面向数据报的传输协议，是不可靠的连接。
