@@ -21,7 +21,7 @@ info:
 # Docs: https://redefine-docs.ohevan.com/basic/defaults
 defaults:
   # Favicon
-  favicon: /images/chickfilla.jpg
+  # favicon: /images/chickfilla.jpg
   # Site logo
   logo:
   # Site avatar
