@@ -234,6 +234,93 @@ this.handleClick = this.handleClick.bind(this) // in constructor
 
 使用 redux 进行全局资源管理
 
+### 11. 看懂什么是 this
+
+- def: Scope / Context of its use
+
+#### 11.1 Global scope
+
+```ts
+// this = Window
+// this = {frames: Window, postMessage: ƒ, blur: ƒ, focus: ƒ, …}
+this.alert("test") = Window.alert("test");
+```
+
+#### 11.2 Function scope
+
+`this` 取决于 function 如何被 call
+
+- explicitly set:
+
+  - `call`, `apply`, `bind` the value of `this` in a function (include Arrow function)
+  - object is a **local variable (block scoped)**
+    - 处于 global scope 时, this 和 object 无关
+    - 处于 class 时, this 和 object 有关
+
+  ```ts
+  const object = { a: 5, b: 7 };
+  const f = function (c, d) {
+    return this.a + this.b + c + d;
+  };
+
+  // call
+  f.call(object, 12, 4); // 5 + 7 + 12 + 4
+
+  // apply
+  f.apply(object, [12, 4]); // 5 + 7 + 12 + 4
+
+  // bind
+  const bindF = f.bind(object);
+  bindF(12, 4); // 5 + 7 + 12 + 4
+  ```
+
+  - Arrow function
+    - 无法修改 this 绑定
+    - 不可位于 global 位置
+      - 因为箭头函数不会创建自己的 this，它的 this 取决于定义时的词法作用域。
+      - 在这种顶层声明的场景里, this = undefined (strict) 或者是 global scope, 但绝对不会自动指向定义的 object.
+      - 直接使用即可，而不是写 this.object
+
+```ts
+const f = () => {
+	return this.object.a + this.object.b
+}
+// equivalent
+constructor() { // 本质是把f放到constructor中
+  this.f = () => { /* ... */ };
+  ...
+}
+```
+
+- not set:
+  - `this` defaults to global context
+  - strict mode: this = it's explicit value
+    - if not set, `this = undefined`
+  ```ts
+  const f = function () {
+    return this;
+  }; // Window
+  const f = function () {
+    "use strict";
+    return this;
+  }; // undefined
+  ```
+
+#### 11.3 Object context
+
+this refer to the object to itself.
+
+```ts
+const object = {
+  a: 2,
+  b: 3,
+  f: function () {
+    return this.a + this.b;
+  },
+};
+object.f(); // returns 2 + 3
+```
+
 ---
 
 ### 底层逻辑
