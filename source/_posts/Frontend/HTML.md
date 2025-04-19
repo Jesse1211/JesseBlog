@@ -5,28 +5,26 @@ categories:
   - HTML
 ---
 
-## HTML
-
 #### 网页结构
 
 ```html
-<!doctype html>
-	<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		// 适口信息 - 对于不同platform
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    // 适口信息 - 对于不同platform
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-		<title>页面标签</title>
+    <title>页面标签</title>
 
-		// 引入外部标识 + CSS样式 + 脚本
-		<link/>
-		<script/>
-	</head>
+    // 引入外部标识 + CSS样式 + 脚本
+    <link />
+    <script />
+  </head>
 
-	<body>
-		具体页面结构
-	</body>
+  <body>
+    具体页面结构
+  </body>
 </html>
 ```
 
@@ -86,11 +84,11 @@ display: none; // 隐藏
 
 ```html
 <table>
-	<tr>
-		<td>1</td>
-		<td>1</td>
-		<td>1</td>
-	</tr>
+  <tr>
+    <td>1</td>
+    <td>1</td>
+    <td>1</td>
+  </tr>
 </table>
 ```
 

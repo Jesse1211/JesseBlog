@@ -5,8 +5,6 @@ categories:
   - TypeScript
 ---
 
-## TypeScript
-
 ### 1. What is TypeScript
 
 - `TypeScript` is super-set of JavaScript

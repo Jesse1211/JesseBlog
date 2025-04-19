@@ -5,7 +5,7 @@ categories:
   - C#
 ---
 
-# C#
+# C# Programming Language
 
 ## Types
 

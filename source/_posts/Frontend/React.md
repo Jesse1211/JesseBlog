@@ -5,8 +5,6 @@ categories:
   - React
 ---
 
-# React
-
 ### 1. What is React
 
 - CORE: Design by Component; 组合 & 嵌套 来构成整体页面
@@ -492,11 +490,14 @@ function f(props) {
   - 避免嵌套地狱
   - `const Enchanced = compose(withAuth, withLogger, withRouter)(BaseComponent);`
 - **Ref**
+
   - ref -> 最外层容器组件实例, 不是被包裹的组件
     - 挂载在 DOM 上的是外层 HOC, 不是 `WrappedComponent`
   - function component 获得 ref: `React.forwardRef`
+
     - (因为没有实例)
     - ref 无法和 props 一样传递
+
     ```jsx
     const MyComponent = React.forwardRef((props, ref) => {
       return <div ref={ref}>Hello</div>;

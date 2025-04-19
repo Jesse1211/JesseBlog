@@ -5,8 +5,6 @@ categories:
   - CSS
 ---
 
-## CSS
-
 ### 1. Normal Flow
 
 HTML 元素的默认排列方式
